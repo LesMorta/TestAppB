@@ -4,27 +4,147 @@
              x:Class="TestAppB.Views.PlantPage">
 
 
-    <StackLayout Padding="30" VerticalOptions="CenterAndExpand" Spacing="25">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="HeaderStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="#2e7d32"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="FontSize" Value="26"/>
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="0,0,0,5"/>
+            </Style>
+            <Style x:Key="SubheaderStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="#4CAF50"/>
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="0,0,0,15"/>
+            </Style>
+            <Style x:Key="InfoTextStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="#546E7A"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+            </Style>
+            <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#66BB6A"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="CornerRadius" Value="20"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="Margin" Value="30,10"/>
+                <Setter Property="HeightRequest" Value="50"/>
+            </Style>
+            <Style x:Key="SecondaryButtonStyle" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#42A5F5"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="CornerRadius" Value="20"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="Margin" Value="30,0"/>
+                <Setter Property="HeightRequest" Value="50"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
-        <Label x:Name="statusLabel"
-               TextColor="#2e7d32"
-               FontAttributes="Bold"
-               FontSize="24"
-               HorizontalTextAlignment="Center" />
+    <ScrollView>
+        <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto" Padding="20">
+            <!-- Приветствие -->
+            <StackLayout Grid.Row="0" Margin="0,20,0,0">
+                <Label x:Name="greetingLabel"
+                       Style="{StaticResource SubheaderStyle}"/>
+                <Label x:Name="statusLabel"
+                       Style="{StaticResource HeaderStyle}"/>
+                <BoxView HeightRequest="2" 
+                         BackgroundColor="#E8F5E9" 
+                         HorizontalOptions="Center" 
+                         WidthRequest="100" 
+                         Margin="0,10"/>
+            </StackLayout>
 
-        <Frame BackgroundColor="White" CornerRadius="25" Padding="25" Margin="20" HasShadow="True">
-            <Image x:Name="plantImage"
-                   HeightRequest="280"
-                   Aspect="AspectFit"
-                   Margin="10" />
-        </Frame>
+            <!-- Изображение растения -->
+            <Frame Grid.Row="1" 
+                   BackgroundColor="White" 
+                   CornerRadius="30" 
+                   Padding="5" 
+                   Margin="10,15,10,25" 
+                   HasShadow="True"
+                   BorderColor="#E0F2F1">
+                <Grid>
+                    <Image x:Name="plantImage"
+                           HeightRequest="250"
+                           Aspect="AspectFit"
+                           Margin="15" />
 
-        <Button Text="Полить растение" Clicked="WaterButton_Clicked" BackgroundColor="#66bb6a" TextColor="White" />
-        <Button Text="Мои растения" Clicked="OpenPlantsPage_Clicked" BackgroundColor="#42a5f5" TextColor="White"/>
+                    <Frame BackgroundColor="#E8F5E9" 
+                           CornerRadius="15" 
+                           Padding="10" 
+                           HorizontalOptions="End" 
+                           VerticalOptions="End" 
+                           Margin="0,0,15,15"
+                           HasShadow="False"
+                           IsVisible="{Binding Source={x:Reference plantTipsLabel}, Path=IsVisible}">
+                        <Label x:Name="plantTipsLabel"
+                               Text="💡 Совет дня"
+                               TextColor="#388E3C"
+                               FontSize="12"
+                               FontAttributes="Bold"/>
+                    </Frame>
+                </Grid>
+            </Frame>
 
-        <Label x:Name="lastWateredLabel"
-               FontSize="14"
-               TextColor="Gray"
-               HorizontalTextAlignment="Center" />
-    </StackLayout>
+            <!-- Информация о поливе -->
+            <Frame Grid.Row="2" 
+                   BackgroundColor="#E8F5E9" 
+                   Padding="20" 
+                   CornerRadius="20" 
+                   Margin="10,0,10,20"
+                   HasShadow="False">
+                <StackLayout Spacing="10">
+                    <Label x:Name="plantTipDetailLabel"
+                           TextColor="#388E3C"
+                           FontSize="14"/>
+                    <Label x:Name="lastWateredLabel"
+                           Style="{StaticResource InfoTextStyle}"/>
+                    <Label x:Name="nextWateringLabel"
+                           Style="{StaticResource InfoTextStyle}"/>
+                </StackLayout>
+            </Frame>
+
+            <!-- Кнопки -->
+            <StackLayout Grid.Row="3" Spacing="15">
+                <Button Text="💧 Полить растение" 
+                        Clicked="WaterButton_Clicked" 
+                        Style="{StaticResource PrimaryButtonStyle}"/>
+                <Button Text="🌱 Мои растения" 
+                        Clicked="OpenPlantsPage_Clicked" 
+                        Style="{StaticResource SecondaryButtonStyle}"/>
+            </StackLayout>
+
+            <!-- Достижения -->
+            <Frame Grid.Row="4" 
+                   BackgroundColor="White" 
+                   CornerRadius="20" 
+                   Padding="15" 
+                   Margin="10,15,10,10"
+                   BorderColor="#E0F2F1"
+                   HasShadow="False">
+                <StackLayout>
+                    <Label Text="Последнее достижение" 
+                           TextColor="#2E7D32" 
+                           FontAttributes="Bold" 
+                           HorizontalOptions="Center"
+                           FontSize="16"
+                           Margin="0,0,0,5"/>
+                    <StackLayout x:Name="lastAchievementLayout" Orientation="Horizontal" HorizontalOptions="Center">
+                        <Image x:Name="lastAchievementIcon" 
+                               HeightRequest="30" 
+                               WidthRequest="30"
+                               VerticalOptions="Center"/>
+                        <Label x:Name="lastAchievementLabel"
+                               TextColor="#546E7A"
+                               FontSize="14"
+                               VerticalOptions="Center"
+                               Text="Разблокируйте свое первое достижение!"/>
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+        </Grid>
+    </ScrollView>
 </ContentPage>

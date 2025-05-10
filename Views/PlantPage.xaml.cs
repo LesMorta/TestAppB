@@ -20,16 +20,79 @@ namespace TestAppB.Views
         private int appOpenCount;
         private DateTime lastOpenDate;
         private int consecutiveDays = 0;
+        private Random random = new Random();
 
         private const string StatusKey = "plant_watered";
         private const string LastWateredKey = "plant_last_watered";
         private const string LastOpenDateKey = "last_open_date";
         private const string ConsecutiveDaysKey = "consecutive_days";
 
+        // Советы по уходу за растениями
+        private string[] plantTips = new string[]
+        {
+            "Большинство комнатных растений предпочитают яркий непрямой свет.",
+            "Поливайте растения рано утром или вечером, чтобы избежать быстрого испарения.",
+            "Многие растения любят влажный воздух — можно использовать увлажнитель.",
+            "Удобряйте растения весной и летом, когда они активно растут.",
+            "Регулярно очищайте листья растений от пыли мягкой влажной тканью.",
+            "Поворачивайте горшки с растениями, чтобы обеспечить равномерный рост.",
+            "Большинство растений не любят сквозняки.",
+            "Пересаживайте комнатные растения раз в 1-2 года для здоровья корней.",
+            "Желтеющие листья могут быть признаком чрезмерного полива.",
+            "Коричневые кончики листьев часто указывают на сухой воздух.",
+            "Не ставьте растения рядом с отопительными приборами."
+        };
+
         public PlantPage()
         {
             InitializeComponent();
             CheckPlantStatus();
+            SetGreeting();
+            ShowRandomTip();
+            UpdateLastAchievement();
+        }
+
+        private void SetGreeting()
+        {
+            int hour = DateTime.Now.Hour;
+            string greeting;
+
+            if (hour >= 5 && hour < 12)
+                greeting = "Доброе утро! 🌞";
+            else if (hour >= 12 && hour < 18)
+                greeting = "Добрый день! 🌤";
+            else if (hour >= 18 && hour < 22)
+                greeting = "Добрый вечер! 🌙";
+            else
+                greeting = "Доброй ночи! ✨";
+
+            greetingLabel.Text = greeting;
+        }
+
+        private void ShowRandomTip()
+        {
+            int tipIndex = random.Next(plantTips.Length);
+            plantTipDetailLabel.Text = plantTips[tipIndex];
+        }
+
+        private void UpdateLastAchievement()
+        {
+            // Находим последнее разблокированное достижение
+            Achievement lastAchievement = null;
+
+            foreach (var ach in AchievementService.AllAchievements)
+            {
+                if (Preferences.Get($"Ach_{ach.Id}", false))
+                {
+                    lastAchievement = ach;
+                }
+            }
+
+            if (lastAchievement != null)
+            {
+                lastAchievementIcon.Source = lastAchievement.Icon;
+                lastAchievementLabel.Text = lastAchievement.Title;
+            }
         }
 
         private void CheckPlantStatus()
@@ -47,14 +110,40 @@ namespace TestAppB.Views
                     Preferences.Set(StatusKey, false);
                 }
 
-                lastWateredLabel.Text = "Последний полив: " + lastWatered.ToString("g");
+                TimeSpan timeSinceWatered = DateTime.Now - lastWatered;
+
+                lastWateredLabel.Text = $"Последний полив: {lastWatered.ToString("dd MMMM HH:mm")}";
+
+                // Показываем примерное время до следующего полива
+                if (isWatered)
+                {
+                    TimeSpan timeRemaining = TimeSpan.FromHours(24) - timeSinceWatered;
+                    nextWateringLabel.Text = $"Следующий полив через: {FormatTimeSpan(timeRemaining)}";
+                }
+                else
+                {
+                    nextWateringLabel.Text = "Растению требуется полив!";
+                }
             }
             else
             {
                 lastWateredLabel.Text = "Растение ещё не поливали";
+                nextWateringLabel.Text = "Растению требуется полив!";
             }
 
             UpdateUI(isWatered);
+        }
+
+        private string FormatTimeSpan(TimeSpan timeSpan)
+        {
+            if (timeSpan.TotalHours >= 1)
+            {
+                return $"{(int)timeSpan.TotalHours} ч {timeSpan.Minutes} мин";
+            }
+            else
+            {
+                return $"{timeSpan.Minutes} мин";
+            }
         }
 
         private void UpdateUI(bool isWatered)
@@ -71,7 +160,7 @@ namespace TestAppB.Views
             }
         }
 
-        private void WaterButton_Clicked(object sender, EventArgs e)
+        private async void WaterButton_Clicked(object sender, EventArgs e)
         {
             waterCount = Preferences.Get("WaterCount", 0) + 1;
             Preferences.Set("WaterCount", waterCount);
@@ -84,6 +173,11 @@ namespace TestAppB.Views
             CheckPlantStatus();
 
             CheckAchievements();
+            UpdateLastAchievement();
+
+            // Добавим небольшую анимацию при поливе
+            await plantImage.ScaleTo(1.1, 250, Easing.SpringOut);
+            await plantImage.ScaleTo(1.0, 250, Easing.SpringIn);
         }
 
         private void OpenPlantsPage_Clicked(object sender, EventArgs e)
@@ -129,6 +223,9 @@ namespace TestAppB.Views
             Preferences.Set(LastOpenDateKey, DateTime.Today.ToString());
 
             CheckAchievements();
+            SetGreeting();
+            ShowRandomTip();
+            UpdateLastAchievement();
         }
 
         private void CheckAchievements()
@@ -274,6 +371,7 @@ namespace TestAppB.Views
 
             Preferences.Set($"Ach_{achievement.Id}", true);
             await DisplayAlert("Досягнення!", $"Отримано: {achievement.Title}", "ОК");
+            UpdateLastAchievement();
         }
 
         // Допоміжний метод для визначення номера тижня
