@@ -26,6 +26,20 @@ namespace TestAppB.Views
         private const string LastOpenDateKey = "last_open_date";
         private const string ConsecutiveDaysKey = "consecutive_days";
 
+        private const string StatusKey = "plant_watered";
+        private const string LastWateredKey = "plant_last_watered";
+        private const string LastOpenDateKey = "last_open_date";
+        private const string ConsecutiveDaysKey = "consecutive_days"; private const string StatusKey = "plant_watered";
+        private const string LastWateredKey = "plant_last_watered";
+        private const string LastOpenDateKey = "last_open_date";
+        private const string ConsecutiveDaysKey = "consecutive_days"; private const string StatusKey = "plant_watered";
+        private const string LastWateredKey = "plant_last_watered";
+        private const string LastOpenDateKey = "last_open_date";
+        private const string ConsecutiveDaysKey = "consecutive_days"; private const string StatusKey = "plant_watered";
+        private const string LastWateredKey = "plant_last_watered";
+        private const string LastOpenDateKey = "last_open_date";
+        private const string ConsecutiveDaysKey = "consecutive_days";
+
         public PlantPage()
         {
             InitializeComponent();
