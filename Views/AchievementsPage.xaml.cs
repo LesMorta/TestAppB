@@ -12,21 +12,77 @@ using TestAppB.Models;
 
 namespace TestAppB.Views
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class AchievementsPage : ContentPage
-	{
-		public AchievementsPage ()
-		{
-			InitializeComponent ();
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class AchievementsPage : ContentPage
+    {
+        private List<Achievement> filteredAchievements;
+        private bool showOnlyUnlocked = false;
 
-            var list = AchievementService.AllAchievements;
+        public AchievementsPage()
+        {
+            InitializeComponent();
+            LoadAchievements();
+        }
 
-            foreach (var ach in list)
+        private void LoadAchievements()
+        {
+            var allAchievements = AchievementService.AllAchievements.ToList();
+
+            // Обновляем статус каждого достижения
+            foreach (var ach in allAchievements)
             {
                 ach.IsUnlocked = Preferences.Get($"Ach_{ach.Id}", false);
             }
 
-            achievementsView.ItemsSource = list;
+            // Сортируем: сначала разблокированные, потом заблокированные
+            filteredAchievements = allAchievements
+                .OrderByDescending(a => a.IsUnlocked)
+                .ThenBy(a => a.Title)
+                .ToList();
+
+            // Обновляем UI
+            achievementsView.ItemsSource = filteredAchievements;
+            UpdateStatistics(allAchievements);
         }
-	}
+
+        private void UpdateStatistics(List<Achievement> achievements)
+        {
+            int total = achievements.Count;
+            int unlocked = achievements.Count(a => a.IsUnlocked);
+            double progress = total > 0 ? (double)unlocked / total * 100 : 0;
+
+            totalAchievementsLabel.Text = total.ToString();
+            unlockedAchievementsLabel.Text = $"{unlocked}/{total}";
+            progressLabel.Text = $"{progress:F1}%";
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            // Обновляем достижения при каждом появлении страницы
+            LoadAchievements();
+        }
+
+        private async void RefreshButton_Clicked(object sender, EventArgs e)
+        {
+            var button = sender as Frame;
+
+            // Анимация вращения кнопки
+            await button.RotateTo(360, 500);
+            button.Rotation = 0;
+
+            // Перезагружаем достижения
+            LoadAchievements();
+
+            // Показываем уведомление
+            await DisplayAlert("Обновлено", "Статус достижений обновлен!", "OK");
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            // Возвращаемся на главную страницу
+            Application.Current.MainPage = new MainPage();
+            return true;
+        }
+    }
 }
