@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             BackgroundColor="#F5F7FA"
+             x:Class="TestAppB.Views.RegisterPage">
+
+    <ContentPage.Content>
+        <Grid>
+            <!-- Фонове оформлення -->
+            <BoxView Color="#66bb6a" 
+                     HeightRequest="220" 
+                     HorizontalOptions="Fill" 
+                     VerticalOptions="Start" />
+
+            <StackLayout Padding="20" VerticalOptions="FillAndExpand">
+                <!-- Заголовок додатку -->
+                <StackLayout Orientation="Horizontal" Margin="0,20,0,30">
+                    <ImageButton Source="back_arrow.png" 
+                                 WidthRequest="28" 
+                                 HeightRequest="28" 
+                                 BackgroundColor="Transparent"
+                                 Clicked="BackToLogin_Clicked"
+                                 VerticalOptions="Center" />
+
+                    <Label Text="Solution Root" 
+                           TextColor="White" 
+                           FontSize="32" 
+                           FontAttributes="Bold" 
+                           HorizontalOptions="CenterAndExpand"
+                           VerticalOptions="Center" />
+
+                    <BoxView WidthRequest="28" BackgroundColor="Transparent" />
+                </StackLayout>
+
+                <!-- Картка реєстрації -->
+                <Frame CornerRadius="15" 
+                       HasShadow="True" 
+                       Padding="20" 
+                       Margin="0,0,0,20" 
+                       BackgroundColor="White">
+
+                    <StackLayout Spacing="20">
+                        <Label Text="Створення акаунту" 
+                               FontSize="24" 
+                               FontAttributes="Bold" 
+                               TextColor="#424242"
+                               HorizontalOptions="Center"
+                               Margin="0,0,0,10" />
+
+                        <!-- Поле Ім'я -->
+                        <Frame BorderColor="#E0E0E0" 
+                               CornerRadius="10" 
+                               Padding="10,5" 
+                               HasShadow="False">
+                            <StackLayout Orientation="Horizontal">
+                                <Image Source="user_icon.png" 
+                                       WidthRequest="24" 
+                                       HeightRequest="24"
+                                       VerticalOptions="Center" />
+                                <Entry x:Name="nameEntry" 
+                                       Placeholder="Введіть ваше ім'я" 
+                                       PlaceholderColor="#BDBDBD"
+                                       TextColor="#424242"
+                                       HorizontalOptions="FillAndExpand"
+                                       BackgroundColor="Transparent" />
+                            </StackLayout>
+                        </Frame>
+
+                        <!-- Поле Email -->
+                        <Frame BorderColor="#E0E0E0" 
+                               CornerRadius="10" 
+                               Padding="10,5" 
+                               HasShadow="False">
+                            <StackLayout Orientation="Horizontal">
+                                <Image Source="email_icon.png" 
+                                       WidthRequest="24" 
+                                       HeightRequest="24"
+                                       VerticalOptions="Center" />
+                                <Entry x:Name="emailEntry" 
+                                       Placeholder="Введіть email" 
+                                       PlaceholderColor="#BDBDBD"
+                                       TextColor="#424242"
+                                       Keyboard="Email"
+                                       HorizontalOptions="FillAndExpand"
+                                       BackgroundColor="Transparent" />
+                            </StackLayout>
+                        </Frame>
+
+                        <!-- Поле Пароль -->
+                        <Frame BorderColor="#E0E0E0" 
+                               CornerRadius="10" 
+                               Padding="10,5" 
+                               HasShadow="False">
+                            <StackLayout Orientation="Horizontal">
+                                <Image Source="lock_icon.png" 
+                                       WidthRequest="24" 
+                                       HeightRequest="24"
+                                       VerticalOptions="Center" />
+                                <Entry x:Name="passwordEntry" 
+                                       Placeholder="Створіть пароль" 
+                                       PlaceholderColor="#BDBDBD"
+                                       TextColor="#424242"
+                                       IsPassword="True"
+                                       HorizontalOptions="FillAndExpand"
+                                       BackgroundColor="Transparent" />
+                            </StackLayout>
+                        </Frame>
+
+                        <!-- Поле Підтвердження паролю -->
+                        <Frame BorderColor="#E0E0E0" 
+                               CornerRadius="10" 
+                               Padding="10,5" 
+                               HasShadow="False">
+                            <StackLayout Orientation="Horizontal">
+                                <Image Source="lock_icon.png" 
+                                       WidthRequest="24" 
+                                       HeightRequest="24"
+                                       VerticalOptions="Center" />
+                                <Entry x:Name="confirmPasswordEntry" 
+                                       Placeholder="Підтвердіть пароль" 
+                                       PlaceholderColor="#BDBDBD"
+                                       TextColor="#424242"
+                                       IsPassword="True"
+                                       HorizontalOptions="FillAndExpand"
+                                       BackgroundColor="Transparent" />
+                            </StackLayout>
+                        </Frame>
+
+                        <!-- Умови використання -->
+                        <StackLayout Orientation="Horizontal" Margin="0,10,0,10">
+                            <CheckBox x:Name="termsCheckBox" 
+                                      Color="#66bb6a" 
+                                      VerticalOptions="Center" />
+                            <Label Text="Я приймаю умови використання та політику конфіденційності" 
+                                   FontSize="12" 
+                                   TextColor="#757575"
+                                   VerticalOptions="Center" />
+                        </StackLayout>
+
+                        <!-- Кнопка реєстрації -->
+                        <Button Text="Зареєструватися" 
+                                BackgroundColor="#66bb6a" 
+                                TextColor="White" 
+                                FontAttributes="Bold"
+                                CornerRadius="25" 
+                                HeightRequest="50"
+                                Clicked="RegisterButton_Clicked" />
+                    </StackLayout>
+                </Frame>
+
+                <!-- Кнопка увійти -->
+                <Button Text="Вже маєте акаунт? Увійти" 
+                        BackgroundColor="Transparent" 
+                        TextColor="#66bb6a" 
+                        FontAttributes="Bold"
+                        Clicked="BackToLogin_Clicked"
+                        BorderWidth="0" />
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
