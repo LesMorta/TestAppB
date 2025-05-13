@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TestAppB.Views.NewsDetailPage"
+             BackgroundColor="#f5f9f2">
+
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IconOverride="back_arrow.png"/>
+    </Shell.BackButtonBehavior>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="TitleStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="#2E7D32"/>
+                <Setter Property="FontSize" Value="22"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="LineBreakMode" Value="WordWrap"/>
+                <Setter Property="Margin" Value="0,0,0,10"/>
+            </Style>
+
+            <Style x:Key="ContentStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="#37474F"/>
+                <Setter Property="FontSize" Value="15"/>
+                <Setter Property="LineBreakMode" Value="WordWrap"/>
+            </Style>
+
+            <Style x:Key="MetaStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="#78909C"/>
+                <Setter Property="FontSize" Value="13"/>
+            </Style>
+
+            <Style x:Key="CategoryStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="Padding" Value="10,5"/>
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="TagStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="#00796B"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="Padding" Value="10,5"/>
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <StackLayout Padding="0,0,0,20">
+            <!-- Изображение новости -->
+            <Grid>
+                <Image x:Name="newsImage" 
+                       Aspect="AspectFill" 
+                       HeightRequest="250" 
+                       Source="{Binding ImageUrl}"/>
+
+                <BoxView BackgroundColor="Black" 
+                         Opacity="0.3" 
+                         HeightRequest="250"/>
+
+                <!-- Категория и кнопка назад -->
+                <StackLayout Padding="15" VerticalOptions="Start">
+                    <Frame BackgroundColor="#4CAF50" 
+                           CornerRadius="15" 
+                           Padding="10,5" 
+                           HorizontalOptions="Start" 
+                           HasShadow="False">
+                        <Label x:Name="categoryLabel" 
+                               Text="{Binding Category}" 
+                               Style="{StaticResource CategoryStyle}"/>
+                    </Frame>
+                </StackLayout>
+
+                <!-- Заголовок новости на изображении -->
+                <StackLayout Padding="15" 
+                             VerticalOptions="End">
+                    <Label x:Name="titleLabel" 
+                           Text="{Binding Title}" 
+                           TextColor="White" 
+                           FontSize="24" 
+                           FontAttributes="Bold" 
+                           LineBreakMode="WordWrap"/>
+
+                    <StackLayout Orientation="Horizontal" Spacing="10">
+                        <Label x:Name="authorLabel" 
+                               Text="{Binding Author}" 
+                               TextColor="White" 
+                               FontSize="14"/>
+                        <Label Text="•" 
+                               TextColor="White" 
+                               FontSize="14" 
+                               VerticalOptions="Center"/>
+                        <Label x:Name="dateLabel" 
+                               Text="{Binding PublishedDate, StringFormat='{0:dd MMMM yyyy}'}" 
+                               TextColor="White" 
+                               FontSize="14"/>
+                    </StackLayout>
+                </StackLayout>
+            </Grid>
+
+            <!-- Контент новости -->
+            <Frame BackgroundColor="White" 
+                   CornerRadius="25" 
+                   Margin="-10,-20,0,0" 
+                   Padding="25,20" 
+                   HasShadow="False">
+                <StackLayout>
+                    <!-- Содержание статьи -->
+                    <Label x:Name="contentLabel" 
+                           Text="{Binding Content}" 
+                           Style="{StaticResource ContentStyle}" 
+                           Margin="0,10,0,20"/>
+
+                    <!-- Теги и лайки -->
+                    <BoxView HeightRequest="1" 
+                             BackgroundColor="#E0F2F1" 
+                             Margin="0,10"/>
+
+                    <!-- Теги -->
+                    <Label Text="Теги:" 
+                           TextColor="#546E7A" 
+                           FontSize="14" 
+                           Margin="0,0,0,10"/>
+
+                    <FlexLayout x:Name="tagsLayout" 
+                                Direction="Row" 
+                                Wrap="Wrap" 
+                                JustifyContent="Start" 
+                                AlignItems="Center" 
+                                Margin="0,0,0,20"/>
+
+                    <!-- Кнопки действий -->
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                        <Button x:Name="likeButton" 
+                                Grid.Column="0" 
+                                Text="👍 Нравится" 
+                                Clicked="LikeButton_Clicked" 
+                                BackgroundColor="#66BB6A" 
+                                TextColor="White" 
+                                CornerRadius="20"/>
+
+                        <Button Grid.Column="1" 
+                                Text="📲 Поделиться" 
+                                Clicked="ShareButton_Clicked" 
+                                BackgroundColor="#42A5F5" 
+                                TextColor="White" 
+                                CornerRadius="20"/>
+                    </Grid>
+
+                    <!-- Статистика -->
+                    <StackLayout Orientation="Horizontal" 
+                                 HorizontalOptions="Center" 
+                                 Spacing="15" 
+                                 Margin="0,15,0,0">
+                        <StackLayout Orientation="Horizontal">
+                            <Image Source="like_icon.png" 
+                                   WidthRequest="20" 
+                                   HeightRequest="20" 
+                                   VerticalOptions="Center"/>
+                            <Label x:Name="likesCountLabel" 
+                                   Text="{Binding LikesCount}" 
+                                   Style="{StaticResource MetaStyle}" 
+                                   VerticalOptions="Center"/>
+                        </StackLayout>
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
