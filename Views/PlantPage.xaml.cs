@@ -124,22 +124,21 @@ namespace TestAppB.Views
             {
                 // Загружаем сохраненные растения
                 string savedPlantsJson = Preferences.Get("saved_plants", string.Empty);
-                if (!string.IsNullOrEmpty(savedPlantsJson))
+                if (string.IsNullOrEmpty(savedPlantsJson))
                 {
-                    var loadedPlants = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Plant>>(savedPlantsJson);
-
-                    // Проверяем и инициализируем поля, которые могут быть null после десериализации
-                    foreach (var plant in loadedPlants)
-                    {
-                        if (plant.Notes == null)
-                            plant.Notes = new List<PlantNote>();
-                    }
-
-                    return loadedPlants;
+                    return new List<Plant>(); // Возвращаем пустой список если нет сохраненных растений
                 }
 
-                // Если нет сохраненных растений, возвращаем пустой список
-                return new List<Plant>();
+                var loadedPlants = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Plant>>(savedPlantsJson);
+
+                // Проверяем и инициализируем поля, которые могут быть null после десериализации
+                foreach (var plant in loadedPlants)
+                {
+                    if (plant.Notes == null)
+                        plant.Notes = new List<PlantNote>();
+                }
+
+                return loadedPlants;
             }
             catch (Exception ex)
             {
@@ -152,6 +151,13 @@ namespace TestAppB.Views
         {
             try
             {
+                if (plants == null || plants.Count == 0)
+                {
+                    // Если список пуст, сохраняем пустую строку
+                    Preferences.Remove("saved_plants");
+                    return;
+                }
+
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(plants);
                 Preferences.Set("saved_plants", json);
             }
@@ -231,42 +237,43 @@ namespace TestAppB.Views
         private async void PlantDetails_Tapped(object sender, EventArgs e)
         {
             // Получаем имя растения из параметра команды
-            string plantName = (string)((TapGestureRecognizer)((Frame)sender).GestureRecognizers[0]).CommandParameter;
+            var tapGesture = ((Frame)sender).GestureRecognizers.FirstOrDefault() as TapGestureRecognizer;
+            if (tapGesture == null) return;
+
+            string plantName = (string)tapGesture.CommandParameter;
+            if (string.IsNullOrEmpty(plantName)) return;
 
             // Находим растение в коллекции
             Plant plant = plants.FirstOrDefault(p => p.Name == plantName);
-            if (plant != null)
+            if (plant == null) return;
+
+            // Показываем контекстное меню
+            string action = await DisplayActionSheet(
+                $"Действия с растением: {plant.Name}",
+                "Отмена",
+                null,
+                "Отобразить цветок",
+                "Переименовать",
+                "Добавить запись",
+                "Удалить");
+
+            switch (action)
             {
-                // Показываем контекстное меню
-                string action = await DisplayActionSheet(
-                    $"Действия с растением: {plant.Name}",
-                    "Отмена",
-                    null,
-                    "Отобразить цветок",
-                    "Переименовать",
-                    "Добавить запись",
-                    "Удалить");
+                case "Отобразить цветок":
+                    await Navigation.PushModalAsync(new PlantDisplayPage(plant, plants, SavePlants));
+                    break;
 
-                switch (action)
-                {
-                    case "Отобразить цветок":
-                        // Используем PushModalAsync вместо PushAsync
-                        await Navigation.PushModalAsync(new PlantDisplayPage(plant, plants, SavePlants));
-                        break;
+                case "Переименовать":
+                    await RenamePlant(plant);
+                    break;
 
-                    case "Переименовать":
-                        await RenamePlant(plant);
-                        break;
+                case "Добавить запись":
+                    await Navigation.PushModalAsync(new PlantNotesPage(plant, SavePlants));
+                    break;
 
-                    case "Добавить запись":
-                        // Используем PushModalAsync вместо PushAsync
-                        await Navigation.PushModalAsync(new PlantNotesPage(plant, SavePlants));
-                        break;
-
-                    case "Удалить":
-                        await DeletePlant(plant);
-                        break;
-                }
+                case "Удалить":
+                    await DeletePlant(plant);
+                    break;
             }
         }
 

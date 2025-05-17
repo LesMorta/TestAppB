@@ -190,25 +190,6 @@
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
-
-            <!-- Индикатор загрузки -->
-            <CollectionView.EmptyView>
-                <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="Center">
-                    <Image Source="no_achievements.png" 
-                           HeightRequest="150" 
-                           Aspect="AspectFit" 
-                           Margin="0,0,0,20"/>
-                    <Label Text="Нет достижений" 
-                           FontSize="18" 
-                           TextColor="#757575" 
-                           HorizontalTextAlignment="Center"/>
-                    <Label Text="Начните использовать приложение, чтобы получить первые достижения!" 
-                           FontSize="14" 
-                           TextColor="#B0BEC5" 
-                           HorizontalTextAlignment="Center"
-                           Margin="30,10"/>
-                </StackLayout>
-            </CollectionView.EmptyView>
         </CollectionView>
 
         <!-- Floating Action Button -->

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TestAppB.Models;
 using Xamarin.Forms;
@@ -12,8 +11,8 @@ namespace TestAppB.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class PlantNotesPage : ContentPage
     {
-        private Plant _plant;
-        private Action _saveCallback;
+        private readonly Plant _plant;
+        private readonly Action _saveCallback;
 
         public PlantNotesPage(Plant plant, Action saveCallback)
         {
@@ -25,27 +24,18 @@ namespace TestAppB.Views
             ToolbarItems.Add(new ToolbarItem
             {
                 Text = "Назад",
-                Command = new Command(async () => await CloseCurrentPage())
+                Command = new Command(async () => await Navigation.PopModalAsync())
             });
 
             // Инициализируем заголовок
             plantNameLabel.Text = $"Записи о растении: {_plant.Name}";
-
-            // Загружаем записи
-            LoadNotes();
-        }
-
-        // Метод для закрытия текущей страницы
-        private async Task CloseCurrentPage()
-        {
-            await Navigation.PopModalAsync();
         }
 
         protected override bool OnBackButtonPressed()
         {
             // Обрабатываем нажатие системной кнопки "Назад"
             Device.BeginInvokeOnMainThread(async () => {
-                await CloseCurrentPage();
+                await Navigation.PopModalAsync();
             });
 
             return true;
@@ -84,89 +74,95 @@ namespace TestAppB.Views
                 // Добавляем каждую запись в список
                 foreach (var note in sortedNotes)
                 {
-                    var noteFrame = new Frame
-                    {
-                        Style = (Style)Resources["NoteFrameStyle"]
-                    };
-
-                    var noteLayout = new StackLayout();
-
-                    // Добавляем заголовок записи
-                    var titleLabel = new Label
-                    {
-                        Text = note.Title,
-                        Style = (Style)Resources["NoteTitleStyle"]
-                    };
-                    noteLayout.Children.Add(titleLabel);
-
-                    // Добавляем содержание записи
-                    var contentLabel = new Label
-                    {
-                        Text = note.Content,
-                        Style = (Style)Resources["NoteContentStyle"]
-                    };
-                    noteLayout.Children.Add(contentLabel);
-
-                    // Добавляем дату создания
-                    var dateLabel = new Label
-                    {
-                        Text = note.CreatedAt.ToString("dd.MM.yyyy HH:mm"),
-                        Style = (Style)Resources["NoteDateStyle"]
-                    };
-                    noteLayout.Children.Add(dateLabel);
-
-                    // Добавляем кнопки действий
-                    var actionsLayout = new StackLayout
-                    {
-                        Orientation = StackOrientation.Horizontal,
-                        HorizontalOptions = LayoutOptions.End,
-                        Margin = new Thickness(0, 10, 0, 0)
-                    };
-
-                    // Кнопка редактирования
-                    var editButton = new Button
-                    {
-                        Text = "Изменить",
-                        BackgroundColor = Color.FromHex("#42A5F5"),
-                        TextColor = Color.White,
-                        FontAttributes = FontAttributes.Bold,
-                        CornerRadius = 15,
-                        FontSize = 12,
-                        HeightRequest = 30,
-                        WidthRequest = 90,
-                        Padding = new Thickness(5, 0),
-                        Margin = new Thickness(5, 0)
-                    };
-                    editButton.Clicked += (sender, e) => EditNote_Clicked(note);
-                    actionsLayout.Children.Add(editButton);
-
-                    // Кнопка удаления
-                    var deleteButton = new Button
-                    {
-                        Text = "Удалить",
-                        BackgroundColor = Color.FromHex("#EF5350"),
-                        TextColor = Color.White,
-                        FontAttributes = FontAttributes.Bold,
-                        CornerRadius = 15,
-                        FontSize = 12,
-                        HeightRequest = 30,
-                        WidthRequest = 90,
-                        Padding = new Thickness(5, 0)
-                    };
-                    deleteButton.Clicked += (sender, e) => DeleteNote_Clicked(note);
-                    actionsLayout.Children.Add(deleteButton);
-
-                    noteLayout.Children.Add(actionsLayout);
-
-                    noteFrame.Content = noteLayout;
-                    notesListLayout.Children.Add(noteFrame);
+                    AddNoteToList(note);
                 }
             }
         }
 
+        // Вынесли создание карточки заметки в отдельный метод для избежания дублирования кода
+        private void AddNoteToList(PlantNote note)
+        {
+            var noteFrame = new Frame
+            {
+                Style = (Style)Resources["NoteFrameStyle"]
+            };
+
+            var noteLayout = new StackLayout();
+
+            // Добавляем заголовок записи
+            var titleLabel = new Label
+            {
+                Text = note.Title,
+                Style = (Style)Resources["NoteTitleStyle"]
+            };
+            noteLayout.Children.Add(titleLabel);
+
+            // Добавляем содержание записи
+            var contentLabel = new Label
+            {
+                Text = note.Content,
+                Style = (Style)Resources["NoteContentStyle"]
+            };
+            noteLayout.Children.Add(contentLabel);
+
+            // Добавляем дату создания
+            var dateLabel = new Label
+            {
+                Text = note.CreatedAt.ToString("dd.MM.yyyy HH:mm"),
+                Style = (Style)Resources["NoteDateStyle"]
+            };
+            noteLayout.Children.Add(dateLabel);
+
+            // Добавляем кнопки действий
+            var actionsLayout = new StackLayout
+            {
+                Orientation = StackOrientation.Horizontal,
+                HorizontalOptions = LayoutOptions.End,
+                Margin = new Thickness(0, 10, 0, 0)
+            };
+
+            // Кнопка редактирования
+            var editButton = new Button
+            {
+                Text = "Изменить",
+                BackgroundColor = Color.FromHex("#42A5F5"),
+                TextColor = Color.White,
+                FontAttributes = FontAttributes.Bold,
+                CornerRadius = 15,
+                FontSize = 12,
+                HeightRequest = 30,
+                WidthRequest = 90,
+                Padding = new Thickness(5, 0),
+                Margin = new Thickness(5, 0)
+            };
+            editButton.Clicked += (sender, e) => EditNote_Clicked(note);
+            actionsLayout.Children.Add(editButton);
+
+            // Кнопка удаления
+            var deleteButton = new Button
+            {
+                Text = "Удалить",
+                BackgroundColor = Color.FromHex("#EF5350"),
+                TextColor = Color.White,
+                FontAttributes = FontAttributes.Bold,
+                CornerRadius = 15,
+                FontSize = 12,
+                HeightRequest = 30,
+                WidthRequest = 90,
+                Padding = new Thickness(5, 0)
+            };
+            deleteButton.Clicked += (sender, e) => DeleteNote_Clicked(note);
+            actionsLayout.Children.Add(deleteButton);
+
+            noteLayout.Children.Add(actionsLayout);
+
+            noteFrame.Content = noteLayout;
+            notesListLayout.Children.Add(noteFrame);
+        }
+
         private async void AddNote_Clicked(object sender, EventArgs e)
         {
-            // Запрашиваем заголовок записи с использованием базовой версии метода
+            // Запрашиваем заголовок записи
             string title = await DisplayPromptAsync(
                 "Новая запись",
                 "Введите заголовок записи",
@@ -176,7 +172,7 @@ namespace TestAppB.Views
             if (string.IsNullOrWhiteSpace(title))
                 return;
 
-            // Запрашиваем содержание записи с использованием базовой версии метода
+            // Запрашиваем содержание записи
             string content = await DisplayPromptAsync(
                 "Содержание записи",
                 "Опишите свои наблюдения",
