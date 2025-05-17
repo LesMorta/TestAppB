@@ -72,7 +72,7 @@ namespace TestAppB.Views
             LoadAchievements();
 
             // Показываем уведомление
-            await DisplayAlert("Обновлено", "Статус достижений обновлен!", "OK");
+            await DisplayAlert("Оновлено", "Статус досягнень оновлено!", "OK");
         }
     }
 }

@@ -235,13 +235,13 @@ namespace TestAppB.Views
             LoadPlants();
             CheckWaterAllAchievement();
 
-            await DisplayAlert("💧", $"Растение \"{plant.Name}\" полито!", "OK");
+            await DisplayAlert("💧", $"Рослина \"{plant.Name}\" полита!", "OK");
         }
 
         private async Task DeletePlant(Plant plant)
         {
-            bool confirm = await DisplayAlert("Удаление растения",
-                $"Вы уверены, что хотите удалить \"{plant.Name}\"?",
+            bool confirm = await DisplayAlert("Видалення рослини",
+                $"Вы вневнені, що хочете видалити \"{plant.Name}\"?",
                 "Да", "Нет");
 
             if (confirm)
@@ -313,7 +313,7 @@ namespace TestAppB.Views
 
         private async void ShowAchievementNotification(Achievement achievement)
         {
-            await DisplayAlert("🏆 Достижение получено!",
+            await DisplayAlert("🏆 Досягнення отримато!",
                 $"{achievement.Title}\n\n{achievement.Description}",
                 "Отлично!");
         }

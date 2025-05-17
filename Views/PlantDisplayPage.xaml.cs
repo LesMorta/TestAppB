@@ -83,7 +83,7 @@ namespace TestAppB.Views
                 DateTime nextWatering = _plant.LastWatered.AddDays(2);
                 if (DateTime.Now >= nextWatering)
                 {
-                    nextWateringLabel.Text = "Можно полить сейчас";
+                    nextWateringLabel.Text = "Можна полити зараз";
                     nextWateringLabel.TextColor = Color.FromHex("#4CAF50");
                 }
                 else
@@ -94,14 +94,14 @@ namespace TestAppB.Views
             }
             else
             {
-                lastWateredLabel.Text = "Еще не поливалось";
-                nextWateringLabel.Text = "Можно полить сейчас";
+                lastWateredLabel.Text = "Ще не поливалося";
+                nextWateringLabel.Text = "Можна полити зараз";
                 nextWateringLabel.TextColor = Color.FromHex("#4CAF50");
             }
 
             // Обновляем кнопку полива
             waterButton.IsEnabled = !_plant.IsWatered;
-            waterButton.Text = _plant.IsWatered ? "Уже полито" : "Полить растение";
+            waterButton.Text = _plant.IsWatered ? "Вже полито" : "Полити рослину";
             waterButton.BackgroundColor = _plant.IsWatered ? Color.FromHex("#BDBDBD") : Color.FromHex("#66BB6A");
 
             // Обновляем изображение растения
@@ -139,7 +139,7 @@ namespace TestAppB.Views
                 UpdateUI();
 
                 // Показываем уведомление
-                await DisplayAlert("Успех", $"Растение {_plant.Name} полито!", "OK");
+                await DisplayAlert("Успіх", $"Рослина {_plant.Name} полита!", "OK");
             }
         }
 
@@ -177,7 +177,7 @@ namespace TestAppB.Views
                     await plantImage.ScaleTo(1, 150);
 
                     // Выводим уведомление
-                    await DisplayAlert("Скин изменен", "Вид растения изменен", "OK");
+                    await DisplayAlert("Успіх", "Вигляд рослини змінено", "OK");
                 }
             }
         }

@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TestAppB.Views.PlantNotesPage"
-             Title="Записи о растении"
+             Title="Записи про рослину"
              BackgroundColor="#F5F9F8">
 
     <ContentPage.Resources>
@@ -73,11 +73,11 @@
         <!-- Заголовок -->
         <StackLayout Grid.Row="0" Margin="20,10">
             <Label x:Name="plantNameLabel" 
-                   Text="Записи о растении" 
+                   Text="Записи про рослину" 
                    Style="{StaticResource HeaderLabelStyle}"/>
 
             <Label x:Name="notesCountLabel" 
-                   Text="Всего записей: 0" 
+                   Text="Всього записів: 0" 
                    Style="{StaticResource InfoLabelStyle}"/>
         </StackLayout>
 
@@ -91,14 +91,14 @@
                            HorizontalOptions="Center" 
                            Aspect="AspectFit"/>
 
-                    <Label Text="Нет записей" 
+                    <Label Text="Немає записів" 
                            FontSize="20" 
                            FontAttributes="Bold" 
                            TextColor="#546E7A" 
                            HorizontalOptions="Center" 
                            Margin="0,20,0,10"/>
 
-                    <Label Text="Добавьте первую запись о вашем растении, чтобы отслеживать его рост и развитие" 
+                    <Label Text="Додайте перший запис про вашу рослину, щоб відстежувати її ріст і розвиток" 
                            TextColor="#78909C" 
                            FontSize="16" 
                            HorizontalTextAlignment="Center"/>
@@ -122,7 +122,7 @@
 
         <!-- Кнопка добавления новой записи -->
         <Button Grid.Row="2" 
-                Text="Добавить запись" 
+                Text="Додати запис" 
                 Style="{StaticResource ActionButtonStyle}"
                 Clicked="AddNote_Clicked"/>
     </Grid>

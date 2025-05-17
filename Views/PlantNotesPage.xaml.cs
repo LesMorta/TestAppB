@@ -28,7 +28,7 @@ namespace TestAppB.Views
             });
 
             // Инициализируем заголовок
-            plantNameLabel.Text = $"Записи о растении: {_plant.Name}";
+            plantNameLabel.Text = $"Записи про рослину: {_plant.Name}";
         }
 
         protected override bool OnBackButtonPressed()
@@ -56,7 +56,7 @@ namespace TestAppB.Views
             }
 
             // Обновляем счетчик записей
-            notesCountLabel.Text = $"Всего записей: {_plant.Notes.Count}";
+            notesCountLabel.Text = $"Всього записів: {_plant.Notes.Count}";
 
             // Проверяем, есть ли записи
             bool hasNotes = _plant.Notes.Count > 0;
@@ -124,7 +124,7 @@ namespace TestAppB.Views
             // Кнопка редактирования
             var editButton = new Button
             {
-                Text = "Изменить",
+                Text = "Змінити",
                 BackgroundColor = Color.FromHex("#42A5F5"),
                 TextColor = Color.White,
                 FontAttributes = FontAttributes.Bold,
@@ -141,7 +141,7 @@ namespace TestAppB.Views
             // Кнопка удаления
             var deleteButton = new Button
             {
-                Text = "Удалить",
+                Text = "Видалити",
                 BackgroundColor = Color.FromHex("#EF5350"),
                 TextColor = Color.White,
                 FontAttributes = FontAttributes.Bold,
@@ -164,20 +164,20 @@ namespace TestAppB.Views
         {
             // Запрашиваем заголовок записи
             string title = await DisplayPromptAsync(
-                "Новая запись",
-                "Введите заголовок записи",
-                "Далее",
-                "Отмена");
+                "Новий запис",
+                "Введіть заголовок запису",
+                "Далі",
+                "Скасувати");
 
             if (string.IsNullOrWhiteSpace(title))
                 return;
 
             // Запрашиваем содержание записи
             string content = await DisplayPromptAsync(
-                "Содержание записи",
-                "Опишите свои наблюдения",
-                "Сохранить",
-                "Отмена");
+                "Зміст запису",
+                "Опишіть свої спостереження",
+                "Зберегти",
+                "Скасувати");
 
             if (string.IsNullOrWhiteSpace(content))
                 return;
@@ -203,17 +203,17 @@ namespace TestAppB.Views
             LoadNotes();
 
             // Показываем уведомление
-            await DisplayAlert("Успех", "Запись добавлена", "OK");
+            await DisplayAlert("Успіх", "Запис додано", "OK");
         }
 
         private async void EditNote_Clicked(PlantNote note)
         {
             // Запрашиваем новый заголовок записи
             string newTitle = await DisplayPromptAsync(
-                "Изменение записи",
-                "Изменить заголовок",
-                "Далее",
-                "Отмена",
+                "Зміна запису",
+                "Змінити заголовок",
+                "Далі",
+                "Скасувати",
                 initialValue: note.Title);
 
             if (string.IsNullOrWhiteSpace(newTitle))
@@ -221,10 +221,10 @@ namespace TestAppB.Views
 
             // Запрашиваем новое содержание записи
             string newContent = await DisplayPromptAsync(
-                "Изменение записи",
-                "Изменить содержание",
-                "Сохранить",
-                "Отмена",
+                "Зміна запису",
+                "Змінити зміст",
+                "Зберегти",
+                "Скасувати",
                 initialValue: note.Content);
 
             if (string.IsNullOrWhiteSpace(newContent))
@@ -241,17 +241,17 @@ namespace TestAppB.Views
             LoadNotes();
 
             // Показываем уведомление
-            await DisplayAlert("Успех", "Запись обновлена", "OK");
+            await DisplayAlert("Успіх", "Запис оновлено", "OK");
         }
 
         private async void DeleteNote_Clicked(PlantNote note)
         {
             // Запрашиваем подтверждение удаления
             bool confirm = await DisplayAlert(
-                "Удаление записи",
-                "Вы уверены, что хотите удалить эту запись?",
-                "Да, удалить",
-                "Отмена");
+                "Видалення запису",
+                "Ви впевнені, що хочете видалити цей запис?",
+                "Так, видалити",
+                "Скасувати");
 
             if (!confirm)
                 return;
@@ -266,7 +266,7 @@ namespace TestAppB.Views
             LoadNotes();
 
             // Показываем уведомление
-            await DisplayAlert("Успех", "Запись удалена", "OK");
+            await DisplayAlert("Успіх", "Запис видалено", "OK");
         }
     }
 }

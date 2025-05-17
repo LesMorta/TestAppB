@@ -1,7 +1,8 @@
-﻿<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TestAppB.Views.PlantDisplayPage"
-             Title="Отображение растения"
+             Title="Відображення рослини"
              BackgroundColor="#F5F9F8">
 
     <ContentPage.Resources>
@@ -53,7 +54,7 @@
         <StackLayout>
             <!-- Заголовок растения -->
             <Label x:Name="plantNameLabel" 
-                   Text="Название растения" 
+                   Text="Назва рослини" 
                    Style="{StaticResource HeaderLabelStyle}"/>
 
             <Label x:Name="plantStatusLabel"
@@ -75,7 +76,7 @@
 
             <!-- Кнопка полива -->
             <Button x:Name="waterButton" 
-                    Text="Полить растение" 
+                    Text="Полити рослину" 
                     Style="{StaticResource ActionButtonStyle}"
                     Clicked="WaterPlant_Clicked"/>
 
@@ -83,7 +84,7 @@
             <Frame Style="{StaticResource SectionFrameStyle}" 
                    Margin="15,20,15,10">
                 <StackLayout>
-                    <Label Text="Выберите вид растения" 
+                    <Label Text="Виберіть вигляд рослини" 
                            Style="{StaticResource SubHeaderLabelStyle}"
                            Margin="0,0,0,15"/>
 
@@ -165,7 +166,7 @@
             <!-- Информация о последнем поливе -->
             <Frame Style="{StaticResource SectionFrameStyle}" Margin="15,10,15,20">
                 <StackLayout>
-                    <Label Text="Информация о поливе" 
+                    <Label Text="Інформація про полив" 
                            Style="{StaticResource SubHeaderLabelStyle}"
                            Margin="0,0,0,10"/>
 
@@ -183,26 +184,26 @@
                                Margin="0,5"/>
 
                         <Label Grid.Row="1" Grid.Column="0" 
-                               Text="Последний полив: " 
+                               Text="Останній полив: " 
                                FontAttributes="Bold"
                                TextColor="#546E7A"
                                Margin="0,5"/>
 
                         <Label Grid.Row="1" Grid.Column="1" 
                                x:Name="lastWateredLabel" 
-                               Text="Нет данных"
+                               Text="Немає даних"
                                TextColor="#546E7A"
                                Margin="0,5"/>
 
                         <Label Grid.Row="2" Grid.Column="0" 
-                               Text="Следующий полив: " 
+                               Text="Наступний полив: " 
                                FontAttributes="Bold"
                                TextColor="#546E7A"
                                Margin="0,5"/>
 
                         <Label Grid.Row="2" Grid.Column="1" 
                                x:Name="nextWateringLabel" 
-                               Text="Можно полить сейчас"
+                               Text="Можна полити зараз"
                                TextColor="#546E7A"
                                Margin="0,5"/>
                     </Grid>
@@ -210,11 +211,10 @@
             </Frame>
 
             <!-- Кнопки управления -->
-            <Button Text="Просмотреть записи" 
+            <Button Text="Переглянути записи" 
                     Style="{StaticResource ActionButtonStyle}"
                     BackgroundColor="#78909C"
                     Clicked="ViewNotes_Clicked"/>
         </StackLayout>
-        
     </ScrollView>
 </ContentPage>

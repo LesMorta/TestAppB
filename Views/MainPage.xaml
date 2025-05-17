@@ -4,7 +4,7 @@
             xmlns:views="clr-namespace:TestAppB.Views"
             x:Class="TestAppB.MainPage">
 
-    <views:PlantPage Title="Растение"/>
+    <views:PlantPage Title="Рослини"/>
     <views:AchievementsPage Title="Досягнення"/>
     <views:NewsPage Title="Новини"/>
 

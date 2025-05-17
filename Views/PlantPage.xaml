@@ -64,8 +64,8 @@
             <StackLayout Orientation="Horizontal" Margin="0,15,0,20">
                 <Image Source="plant_icon.png" WidthRequest="40" HeightRequest="40" VerticalOptions="Center"/>
                 <StackLayout VerticalOptions="Center" Margin="15,0,0,0">
-                    <Label Text="Привет, садовод!" Style="{StaticResource HeaderLabelStyle}" Margin="0"/>
-                    <Label x:Name="dateTimeLabel" Text="Сегодня прекрасный день для полива!" 
+                    <Label Text="Привіт, садівник!" Style="{StaticResource HeaderLabelStyle}" Margin="0"/>
+                    <Label x:Name="dateTimeLabel" Text="Сьогодні чудовий день для поливу!" 
                            TextColor="#546E7A" FontSize="14"/>
                 </StackLayout>
             </StackLayout>
@@ -74,7 +74,7 @@
             <Frame Style="{StaticResource InfoCardStyle}" 
                    BackgroundColor="#F1F8E9" BorderColor="#C8E6C9">
                 <StackLayout>
-                    <Label Text="Последнее достижение" Style="{StaticResource SubHeaderLabelStyle}"/>
+                    <Label Text="Останнє досягнення" Style="{StaticResource SubHeaderLabelStyle}"/>
 
                     <!-- Если есть хотя бы одно достижение -->
                     <StackLayout x:Name="lastAchievementLayout" IsVisible="True">
@@ -96,14 +96,14 @@
 
                             <StackLayout Grid.Column="1" Margin="15,0,0,0" VerticalOptions="Center">
                                 <Label x:Name="lastAchievementTitle" 
-                                       Text="Загрузка..." 
+                                       Text="Завантаження..." 
                                        Style="{StaticResource AchievementTitleStyle}"/>
                                 <Label x:Name="lastAchievementDescription" 
-                                       Text="Загрузка описания достижения..." 
+                                       Text="Завантаження опису досягнення..." 
                                        TextColor="#546E7A" 
                                        FontSize="14"/>
                                 <Label x:Name="lastAchievementTime" 
-                                       Text="Получено недавно" 
+                                       Text="Отримано нещодавно" 
                                        TextColor="#78909C" 
                                        FontSize="12" 
                                        Margin="0,5,0,0"/>
@@ -113,17 +113,17 @@
 
                     <!-- Если нет ни одного достижения -->
                     <StackLayout x:Name="noAchievementLayout" IsVisible="False">
-                        <Label Text="У вас пока нет достижений" 
+                        <Label Text="У вас поки немає досягнень" 
                                TextColor="#546E7A" 
                                HorizontalOptions="Center"
                                FontSize="15"/>
-                        <Label Text="Продолжайте ухаживать за растениями, чтобы получить достижения!" 
+                        <Label Text="Продовжуйте доглядати за рослинами, щоб отримати досягнення!" 
                                TextColor="#78909C" 
                                HorizontalOptions="Center"
                                FontSize="13"/>
                     </StackLayout>
 
-                    <Button Text="Все достижения" 
+                    <Button Text="Всі досягнення" 
                             BackgroundColor="#81C784" 
                             TextColor="White"
                             FontAttributes="Bold"
@@ -138,7 +138,7 @@
             <!-- Статистика по растениям -->
             <Frame Style="{StaticResource InfoCardStyle}">
                 <StackLayout>
-                    <Label Text="Ваша коллекция" Style="{StaticResource SubHeaderLabelStyle}"/>
+                    <Label Text="Ваша колекція" Style="{StaticResource SubHeaderLabelStyle}"/>
 
                     <Grid ColumnDefinitions="*, *, *" RowDefinitions="Auto, Auto" Margin="0,10,0,0">
                         <!-- Всего растений -->
@@ -161,7 +161,7 @@
                                    FontAttributes="Bold" 
                                    TextColor="#2E7D32"
                                    HorizontalOptions="Center"/>
-                            <Label Text="Всего" 
+                            <Label Text="Всього" 
                                    FontSize="14" 
                                    TextColor="#546E7A"
                                    HorizontalOptions="Center"/>
@@ -213,7 +213,7 @@
                                    FontAttributes="Bold" 
                                    TextColor="#FFA000"
                                    HorizontalOptions="Center"/>
-                            <Label Text="Достижений" 
+                            <Label Text="Досягнень" 
                                    FontSize="14" 
                                    TextColor="#546E7A"
                                    HorizontalOptions="Center"/>
@@ -223,7 +223,7 @@
             </Frame>
 
             <!-- Список растений -->
-            <Label Text="Ваши растения" Style="{StaticResource SubHeaderLabelStyle}" Margin="0,20,0,10"/>
+            <Label Text="Ваші рослини" Style="{StaticResource SubHeaderLabelStyle}" Margin="0,20,0,10"/>
 
             <!-- Если нет растений -->
             <StackLayout x:Name="emptyPlantsLayout" IsVisible="False">
@@ -233,16 +233,16 @@
                                HeightRequest="150" 
                                Aspect="AspectFit" 
                                Margin="0,0,0,15"/>
-                        <Label Text="У вас пока нет растений" 
+                        <Label Text="У вас поки немає рослин" 
                                FontSize="18" 
                                TextColor="#546E7A" 
                                HorizontalOptions="Center"/>
-                        <Label Text="Добавьте свое первое растение чтобы начать за ним ухаживать" 
+                        <Label Text="Додайте свою першу рослину щоб почати за нею доглядати" 
                                FontSize="14" 
                                TextColor="#78909C" 
                                HorizontalTextAlignment="Center"
                                Margin="0,5"/>
-                        <Button Text="Добавить растение" 
+                        <Button Text="Додати рослину" 
                                 Style="{StaticResource ActionButtonStyle}"
                                 Clicked="AddPlant_Clicked"
                                 Margin="30,15"/>
@@ -253,7 +253,7 @@
             <!-- Если есть растения -->
             <CollectionView x:Name="plantsCollectionView" 
                             SelectionMode="None" 
-                            EmptyView="У вас пока нет растений"
+                            EmptyView="У вас поки немає рослин"
                             IsVisible="True">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
@@ -284,14 +284,14 @@
 
                                 <!-- Время последнего полива -->
                                 <Label Grid.Row="1" Grid.Column="1" 
-                                       Text="{Binding LastWatered, StringFormat='Последний полив: {0:dd.MM HH:mm}'}" 
+                                       Text="{Binding LastWatered, StringFormat='Останній полив: {0:dd.MM HH:mm}'}" 
                                        TextColor="#78909C" 
                                        FontSize="12" 
                                        VerticalOptions="Center"/>
 
                                 <!-- Кнопка полива -->
                                 <Button Grid.Row="0" Grid.Column="1" 
-                                        Text="Полить" 
+                                        Text="Полити" 
                                         BackgroundColor="#42A5F5" 
                                         TextColor="White"
                                         FontAttributes="Bold"
@@ -315,7 +315,7 @@
             </CollectionView>
 
             <!-- Кнопка добавления растения -->
-            <Button Text="Добавить растение" 
+            <Button Text="Додати рослину" 
                     Style="{StaticResource ActionButtonStyle}"
                     BackgroundColor="#66BB6A"
                     Clicked="AddPlant_Clicked"
@@ -324,18 +324,18 @@
             <!-- Советы и информация -->
             <Frame Style="{StaticResource InfoCardStyle}" BackgroundColor="#E3F2FD" BorderColor="#BBDEFB">
                 <StackLayout>
-                    <Label Text="Совет дня" 
+                    <Label Text="Порада дня" 
                            Style="{StaticResource SubHeaderLabelStyle}" 
                            TextColor="#1976D2"/>
                     <Label x:Name="tipOfDayLabel" 
-                           Text="Не забывайте, что разные растения требуют разного режима полива. Проверяйте почву перед каждым поливом!" 
+                           Text="Не забувайте, що різні рослини вимагають різного режиму поливу. Перевіряйте ґрунт перед кожним поливом!" 
                            TextColor="#455A64" 
                            FontSize="14"/>
                 </StackLayout>
             </Frame>
 
             <!-- Просмотр новостей -->
-            <Button Text="Последние статьи о растениях" 
+            <Button Text="Останні статті про рослини" 
                     BackgroundColor="#78909C" 
                     TextColor="White"
                     FontAttributes="Bold"
