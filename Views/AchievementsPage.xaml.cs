@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,6 @@ namespace TestAppB.Views
     public partial class AchievementsPage : ContentPage
     {
         private List<Achievement> filteredAchievements;
-        private bool showOnlyUnlocked = false;
 
         public AchievementsPage()
         {
@@ -26,17 +26,14 @@ namespace TestAppB.Views
 
         private void LoadAchievements()
         {
-            var allAchievements = AchievementService.AllAchievements.ToList();
+            // Используем обновленный метод получения достижений
+            var allAchievements = AchievementService.GetAchievements();
 
-            // Обновляем статус каждого достижения
-            foreach (var ach in allAchievements)
-            {
-                ach.IsUnlocked = Preferences.Get($"Ach_{ach.Id}", false);
-            }
-
-            // Сортируем: сначала разблокированные, потом заблокированные
+            // Сортируем: сначала разблокированные (по времени получения от новых к старым), 
+            // затем заблокированные (по алфавиту)
             filteredAchievements = allAchievements
                 .OrderByDescending(a => a.IsUnlocked)
+                .ThenByDescending(a => a.UnlockTime)
                 .ThenBy(a => a.Title)
                 .ToList();
 
@@ -76,13 +73,6 @@ namespace TestAppB.Views
 
             // Показываем уведомление
             await DisplayAlert("Обновлено", "Статус достижений обновлен!", "OK");
-        }
-
-        protected override bool OnBackButtonPressed()
-        {
-            // Возвращаемся на главную страницу
-            Application.Current.MainPage = new MainPage();
-            return true;
         }
     }
 }

@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using TestAppB.Models;
+using Xamarin.Essentials;
+using Newtonsoft.Json;
 
 namespace TestAppB.Services
 {
     public static class AchievementService
     {
+        private const string LastUnlockedAchievementKey = "last_unlocked_achievement_id";
+        private const string AchievementUnlockTimePrefix = "Ach_Time_";
+
         public static List<Achievement> AllAchievements = new List<Achievement>
         {
             // Існуючі досягнення
@@ -47,5 +53,66 @@ namespace TestAppB.Services
             new Achievement { Id = "autumn_water", Title = "Осінній догляд", Description = "Полий рослину восени", Icon = "achieve22.png" },
             new Achievement { Id = "winter_water", Title = "Зимова турбота", Description = "Полий рослину взимку", Icon = "achieve23.png" }
         };
+
+        // Обновлены методы для работы с достижениями
+        public static List<Achievement> GetAchievements()
+        {
+            var achievements = AllAchievements.ToList();
+
+            // Загружаем статус и время разблокировки для каждого достижения
+            foreach (var achievement in achievements)
+            {
+                achievement.IsUnlocked = Preferences.Get($"Ach_{achievement.Id}", false);
+                if (achievement.IsUnlocked)
+                {
+                    // Получаем время разблокировки
+                    string timeStr = Preferences.Get($"{AchievementUnlockTimePrefix}{achievement.Id}", string.Empty);
+                    if (!string.IsNullOrEmpty(timeStr) && DateTime.TryParse(timeStr, out DateTime unlockTime))
+                    {
+                        achievement.UnlockTime = unlockTime;
+                    }
+                    else
+                    {
+                        // Если время не сохранено (для совместимости со старой версией)
+                        achievement.UnlockTime = DateTime.MinValue;
+                    }
+                }
+            }
+
+            return achievements;
+        }
+
+        // Метод для разблокировки достижения
+        public static void UnlockAchievement(string achievementId)
+        {
+            // Проверяем, не разблокировано ли уже
+            if (Preferences.Get($"Ach_{achievementId}", false))
+                return;
+
+            // Устанавливаем статус разблокировки
+            Preferences.Set($"Ach_{achievementId}", true);
+
+            // Сохраняем текущее время как время разблокировки
+            DateTime now = DateTime.Now;
+            Preferences.Set($"{AchievementUnlockTimePrefix}{achievementId}", now.ToString("o"));
+
+            // Обновляем ID последнего разблокированного достижения
+            Preferences.Set(LastUnlockedAchievementKey, achievementId);
+        }
+
+        // Получение последнего разблокированного достижения
+        public static Achievement GetLastUnlockedAchievement()
+        {
+            var allAchievements = GetAchievements();
+
+            // Фильтруем только разблокированные достижения
+            var unlockedAchievements = allAchievements.Where(a => a.IsUnlocked).ToList();
+
+            if (unlockedAchievements.Count == 0)
+                return null;
+
+            // Сортируем по времени разблокировки (от новых к старым)
+            return unlockedAchievements.OrderByDescending(a => a.UnlockTime).FirstOrDefault();
+        }
     }
 }

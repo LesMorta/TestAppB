@@ -1,150 +1,349 @@
-﻿<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             BackgroundColor="#f5f9f2"
-             x:Class="TestAppB.Views.PlantPage">
-
+             xmlns:converters="clr-namespace:TestAppB.Converters"
+             x:Class="TestAppB.Views.PlantPage"
+             BackgroundColor="#F5F9F8">
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <Style x:Key="HeaderStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="#2e7d32"/>
+            <Style x:Key="HeaderLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="24"/>
                 <Setter Property="FontAttributes" Value="Bold"/>
-                <Setter Property="FontSize" Value="26"/>
-                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+                <Setter Property="TextColor" Value="#2E7D32"/>
+                <Setter Property="Margin" Value="0,5,0,10"/>
+            </Style>
+
+            <Style x:Key="SubHeaderLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="TextColor" Value="#43A047"/>
                 <Setter Property="Margin" Value="0,0,0,5"/>
             </Style>
-            <Style x:Key="SubheaderStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="#4CAF50"/>
-                <Setter Property="FontSize" Value="18"/>
-                <Setter Property="HorizontalTextAlignment" Value="Center"/>
-                <Setter Property="Margin" Value="0,0,0,15"/>
+
+            <Style x:Key="PlantNameStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="22"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="TextColor" Value="#263238"/>
             </Style>
-            <Style x:Key="InfoTextStyle" TargetType="Label">
+
+            <Style x:Key="PlantStatusStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="16"/>
                 <Setter Property="TextColor" Value="#546E7A"/>
-                <Setter Property="FontSize" Value="14"/>
-                <Setter Property="HorizontalTextAlignment" Value="Center"/>
             </Style>
-            <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+
+            <Style x:Key="AchievementTitleStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="TextColor" Value="#2E7D32"/>
+            </Style>
+
+            <Style x:Key="ActionButtonStyle" TargetType="Button">
                 <Setter Property="BackgroundColor" Value="#66BB6A"/>
                 <Setter Property="TextColor" Value="White"/>
-                <Setter Property="CornerRadius" Value="20"/>
                 <Setter Property="FontAttributes" Value="Bold"/>
-                <Setter Property="Margin" Value="30,10"/>
+                <Setter Property="CornerRadius" Value="20"/>
                 <Setter Property="HeightRequest" Value="50"/>
+                <Setter Property="Margin" Value="0,10"/>
             </Style>
-            <Style x:Key="SecondaryButtonStyle" TargetType="Button">
-                <Setter Property="BackgroundColor" Value="#42A5F5"/>
-                <Setter Property="TextColor" Value="White"/>
-                <Setter Property="CornerRadius" Value="20"/>
-                <Setter Property="FontAttributes" Value="Bold"/>
-                <Setter Property="Margin" Value="30,0"/>
-                <Setter Property="HeightRequest" Value="50"/>
+
+            <Style x:Key="InfoCardStyle" TargetType="Frame">
+                <Setter Property="BackgroundColor" Value="White"/>
+                <Setter Property="CornerRadius" Value="15"/>
+                <Setter Property="HasShadow" Value="True"/>
+                <Setter Property="Padding" Value="15"/>
+                <Setter Property="Margin" Value="0,10"/>
+                <Setter Property="BorderColor" Value="#E0F2F1"/>
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
 
     <ScrollView>
-        <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto" Padding="20">
-            <!-- Приветствие -->
-            <StackLayout Grid.Row="0" Margin="0,20,0,0">
-                <Label x:Name="greetingLabel"
-                       Style="{StaticResource SubheaderStyle}"/>
-                <Label x:Name="statusLabel"
-                       Style="{StaticResource HeaderStyle}"/>
-                <BoxView HeightRequest="2" 
-                         BackgroundColor="#E8F5E9" 
-                         HorizontalOptions="Center" 
-                         WidthRequest="100" 
-                         Margin="0,10"/>
-            </StackLayout>
-
-            <!-- Изображение растения -->
-            <Frame Grid.Row="1" 
-                   BackgroundColor="White" 
-                   CornerRadius="30" 
-                   Padding="5" 
-                   Margin="10,15,10,25" 
-                   HasShadow="True"
-                   BorderColor="#E0F2F1">
-                <Grid>
-                    <Image x:Name="plantImage"
-                           HeightRequest="250"
-                           Aspect="AspectFit"
-                           Margin="15" />
-
-                    <Frame BackgroundColor="#E8F5E9" 
-                           CornerRadius="15" 
-                           Padding="10" 
-                           HorizontalOptions="End" 
-                           VerticalOptions="End" 
-                           Margin="0,0,15,15"
-                           HasShadow="False"
-                           IsVisible="{Binding Source={x:Reference plantTipsLabel}, Path=IsVisible}">
-                        <Label x:Name="plantTipsLabel"
-                               Text="💡 Совет дня"
-                               TextColor="#388E3C"
-                               FontSize="12"
-                               FontAttributes="Bold"/>
-                    </Frame>
-                </Grid>
-            </Frame>
-
-            <!-- Информация о поливе -->
-            <Frame Grid.Row="2" 
-                   BackgroundColor="#E8F5E9" 
-                   Padding="20" 
-                   CornerRadius="20" 
-                   Margin="10,0,10,20"
-                   HasShadow="False">
-                <StackLayout Spacing="10">
-                    <Label x:Name="plantTipDetailLabel"
-                           TextColor="#388E3C"
-                           FontSize="14"/>
-                    <Label x:Name="lastWateredLabel"
-                           Style="{StaticResource InfoTextStyle}"/>
-                    <Label x:Name="nextWateringLabel"
-                           Style="{StaticResource InfoTextStyle}"/>
+        <StackLayout Padding="20">
+            <!-- Приветственный заголовок -->
+            <StackLayout Orientation="Horizontal" Margin="0,15,0,20">
+                <Image Source="plant_icon.png" WidthRequest="40" HeightRequest="40" VerticalOptions="Center"/>
+                <StackLayout VerticalOptions="Center" Margin="15,0,0,0">
+                    <Label Text="Привет, садовод!" Style="{StaticResource HeaderLabelStyle}" Margin="0"/>
+                    <Label x:Name="dateTimeLabel" Text="Сегодня прекрасный день для полива!" 
+                           TextColor="#546E7A" FontSize="14"/>
                 </StackLayout>
-            </Frame>
-
-            <!-- Кнопки -->
-            <StackLayout Grid.Row="3" Spacing="15">
-                <Button Text="💧 Полить растение" 
-                        Clicked="WaterButton_Clicked" 
-                        Style="{StaticResource PrimaryButtonStyle}"/>
-                <Button Text="🌱 Мои растения" 
-                        Clicked="OpenPlantsPage_Clicked" 
-                        Style="{StaticResource SecondaryButtonStyle}"/>
             </StackLayout>
 
-            <!-- Достижения -->
-            <Frame Grid.Row="4" 
-                   BackgroundColor="White" 
-                   CornerRadius="20" 
-                   Padding="15" 
-                   Margin="10,15,10,10"
-                   BorderColor="#E0F2F1"
-                   HasShadow="False">
+            <!-- Последнее разблокированное достижение -->
+            <Frame Style="{StaticResource InfoCardStyle}" 
+                   BackgroundColor="#F1F8E9" BorderColor="#C8E6C9">
                 <StackLayout>
-                    <Label Text="Последнее достижение" 
-                           TextColor="#2E7D32" 
-                           FontAttributes="Bold" 
-                           HorizontalOptions="Center"
-                           FontSize="16"
-                           Margin="0,0,0,5"/>
-                    <StackLayout x:Name="lastAchievementLayout" Orientation="Horizontal" HorizontalOptions="Center">
-                        <Image x:Name="lastAchievementIcon" 
-                               HeightRequest="30" 
-                               WidthRequest="30"
-                               VerticalOptions="Center"/>
-                        <Label x:Name="lastAchievementLabel"
-                               TextColor="#546E7A"
-                               FontSize="14"
-                               VerticalOptions="Center"
-                               Text="Разблокируйте свое первое достижение!"/>
+                    <Label Text="Последнее достижение" Style="{StaticResource SubHeaderLabelStyle}"/>
+
+                    <!-- Если есть хотя бы одно достижение -->
+                    <StackLayout x:Name="lastAchievementLayout" IsVisible="True">
+                        <Grid ColumnDefinitions="Auto, *">
+                            <Frame Grid.Column="0" 
+                                   BackgroundColor="#E8F5E9" 
+                                   CornerRadius="30" 
+                                   Padding="0" 
+                                   HeightRequest="60" 
+                                   WidthRequest="60"
+                                   HasShadow="False"
+                                   VerticalOptions="Center">
+                                <Image x:Name="lastAchievementIcon" 
+                                       Source="achieve1.png" 
+                                       Aspect="AspectFit"
+                                       HeightRequest="35"
+                                       WidthRequest="35"/>
+                            </Frame>
+
+                            <StackLayout Grid.Column="1" Margin="15,0,0,0" VerticalOptions="Center">
+                                <Label x:Name="lastAchievementTitle" 
+                                       Text="Загрузка..." 
+                                       Style="{StaticResource AchievementTitleStyle}"/>
+                                <Label x:Name="lastAchievementDescription" 
+                                       Text="Загрузка описания достижения..." 
+                                       TextColor="#546E7A" 
+                                       FontSize="14"/>
+                                <Label x:Name="lastAchievementTime" 
+                                       Text="Получено недавно" 
+                                       TextColor="#78909C" 
+                                       FontSize="12" 
+                                       Margin="0,5,0,0"/>
+                            </StackLayout>
+                        </Grid>
                     </StackLayout>
+
+                    <!-- Если нет ни одного достижения -->
+                    <StackLayout x:Name="noAchievementLayout" IsVisible="False">
+                        <Label Text="У вас пока нет достижений" 
+                               TextColor="#546E7A" 
+                               HorizontalOptions="Center"
+                               FontSize="15"/>
+                        <Label Text="Продолжайте ухаживать за растениями, чтобы получить достижения!" 
+                               TextColor="#78909C" 
+                               HorizontalOptions="Center"
+                               FontSize="13"/>
+                    </StackLayout>
+
+                    <Button Text="Все достижения" 
+                            BackgroundColor="#81C784" 
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="20"
+                            HeightRequest="40"
+                            FontSize="14"
+                            Margin="0,10,0,0"
+                            Clicked="ViewAllAchievements_Clicked"/>
                 </StackLayout>
             </Frame>
-        </Grid>
+
+            <!-- Статистика по растениям -->
+            <Frame Style="{StaticResource InfoCardStyle}">
+                <StackLayout>
+                    <Label Text="Ваша коллекция" Style="{StaticResource SubHeaderLabelStyle}"/>
+
+                    <Grid ColumnDefinitions="*, *, *" RowDefinitions="Auto, Auto" Margin="0,10,0,0">
+                        <!-- Всего растений -->
+                        <StackLayout Grid.Row="0" Grid.Column="0" HorizontalOptions="Center">
+                            <Frame BackgroundColor="#E8F5E9" 
+                                   CornerRadius="40" 
+                                   HeightRequest="60" 
+                                   WidthRequest="60"
+                                   HorizontalOptions="Center"
+                                   Padding="0"
+                                   HasShadow="False">
+                                <Label Text="🌱" 
+                                       FontSize="26" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center"/>
+                            </Frame>
+                            <Label x:Name="totalPlantsLabel" 
+                                   Text="0" 
+                                   FontSize="22" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#2E7D32"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Всего" 
+                                   FontSize="14" 
+                                   TextColor="#546E7A"
+                                   HorizontalOptions="Center"/>
+                        </StackLayout>
+
+                        <!-- Политых растений -->
+                        <StackLayout Grid.Row="0" Grid.Column="1" HorizontalOptions="Center">
+                            <Frame BackgroundColor="#E1F5FE" 
+                                   CornerRadius="40" 
+                                   HeightRequest="60" 
+                                   WidthRequest="60"
+                                   HorizontalOptions="Center"
+                                   Padding="0"
+                                   HasShadow="False">
+                                <Label Text="💧" 
+                                       FontSize="26" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center"/>
+                            </Frame>
+                            <Label x:Name="wateredPlantsLabel" 
+                                   Text="0" 
+                                   FontSize="22" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#0288D1"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Полито" 
+                                   FontSize="14" 
+                                   TextColor="#546E7A"
+                                   HorizontalOptions="Center"/>
+                        </StackLayout>
+
+                        <!-- Достижений -->
+                        <StackLayout Grid.Row="0" Grid.Column="2" HorizontalOptions="Center">
+                            <Frame BackgroundColor="#FFF8E1" 
+                                   CornerRadius="40" 
+                                   HeightRequest="60" 
+                                   WidthRequest="60"
+                                   HorizontalOptions="Center"
+                                   Padding="0"
+                                   HasShadow="False">
+                                <Label Text="🏆" 
+                                       FontSize="26" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center"/>
+                            </Frame>
+                            <Label x:Name="achievementsLabel" 
+                                   Text="0" 
+                                   FontSize="22" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#FFA000"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Достижений" 
+                                   FontSize="14" 
+                                   TextColor="#546E7A"
+                                   HorizontalOptions="Center"/>
+                        </StackLayout>
+                    </Grid>
+                </StackLayout>
+            </Frame>
+
+            <!-- Список растений -->
+            <Label Text="Ваши растения" Style="{StaticResource SubHeaderLabelStyle}" Margin="0,20,0,10"/>
+
+            <!-- Если нет растений -->
+            <StackLayout x:Name="emptyPlantsLayout" IsVisible="False">
+                <Frame Style="{StaticResource InfoCardStyle}" Padding="20">
+                    <StackLayout HorizontalOptions="Center">
+                        <Image Source="empty_plants.png" 
+                               HeightRequest="150" 
+                               Aspect="AspectFit" 
+                               Margin="0,0,0,15"/>
+                        <Label Text="У вас пока нет растений" 
+                               FontSize="18" 
+                               TextColor="#546E7A" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Добавьте свое первое растение чтобы начать за ним ухаживать" 
+                               FontSize="14" 
+                               TextColor="#78909C" 
+                               HorizontalTextAlignment="Center"
+                               Margin="0,5"/>
+                        <Button Text="Добавить растение" 
+                                Style="{StaticResource ActionButtonStyle}"
+                                Clicked="AddPlant_Clicked"
+                                Margin="30,15"/>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+
+            <!-- Если есть растения -->
+            <CollectionView x:Name="plantsCollectionView" 
+                            SelectionMode="None" 
+                            EmptyView="У вас пока нет растений"
+                            IsVisible="True">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Style="{StaticResource InfoCardStyle}" Margin="0,5,0,10">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="PlantDetails_Tapped" CommandParameter="{Binding Name}"/>
+                            </Frame.GestureRecognizers>
+
+                            <Grid RowDefinitions="Auto, Auto" ColumnDefinitions="*, Auto">
+                                <!-- Имя растения -->
+                                <Label Grid.Row="0" Grid.Column="0" 
+                                       Text="{Binding Name}" 
+                                       Style="{StaticResource PlantNameStyle}"/>
+
+                                <!-- Статус полива -->
+                                <Label Grid.Row="1" Grid.Column="0" 
+                                       Text="{Binding IsWatered, Converter={StaticResource StatusToTextConverter}}" 
+                                       Style="{StaticResource PlantStatusStyle}">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsWatered}" Value="True">
+                                            <Setter Property="TextColor" Value="#43A047"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsWatered}" Value="False">
+                                            <Setter Property="TextColor" Value="#E53935"/>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+
+                                <!-- Время последнего полива -->
+                                <Label Grid.Row="1" Grid.Column="1" 
+                                       Text="{Binding LastWatered, StringFormat='Последний полив: {0:dd.MM HH:mm}'}" 
+                                       TextColor="#78909C" 
+                                       FontSize="12" 
+                                       VerticalOptions="Center"/>
+
+                                <!-- Кнопка полива -->
+                                <Button Grid.Row="0" Grid.Column="1" 
+                                        Text="Полить" 
+                                        BackgroundColor="#42A5F5" 
+                                        TextColor="White"
+                                        FontAttributes="Bold"
+                                        CornerRadius="15"
+                                        FontSize="14"
+                                        Padding="15,7"
+                                        Clicked="WaterPlant_Clicked"
+                                        CommandParameter="{Binding Name}">
+                                    <Button.Triggers>
+                                        <DataTrigger TargetType="Button" Binding="{Binding IsWatered}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                            <Setter Property="BackgroundColor" Value="#BDBDBD"/>
+                                            <Setter Property="Text" Value="Полито"/>
+                                        </DataTrigger>
+                                    </Button.Triggers>
+                                </Button>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Кнопка добавления растения -->
+            <Button Text="Добавить растение" 
+                    Style="{StaticResource ActionButtonStyle}"
+                    BackgroundColor="#66BB6A"
+                    Clicked="AddPlant_Clicked"
+                    Margin="0,10,0,20"/>
+
+            <!-- Советы и информация -->
+            <Frame Style="{StaticResource InfoCardStyle}" BackgroundColor="#E3F2FD" BorderColor="#BBDEFB">
+                <StackLayout>
+                    <Label Text="Совет дня" 
+                           Style="{StaticResource SubHeaderLabelStyle}" 
+                           TextColor="#1976D2"/>
+                    <Label x:Name="tipOfDayLabel" 
+                           Text="Не забывайте, что разные растения требуют разного режима полива. Проверяйте почву перед каждым поливом!" 
+                           TextColor="#455A64" 
+                           FontSize="14"/>
+                </StackLayout>
+            </Frame>
+
+            <!-- Просмотр новостей -->
+            <Button Text="Последние статьи о растениях" 
+                    BackgroundColor="#78909C" 
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="20"
+                    HeightRequest="50"
+                    Margin="0,20,0,30"
+                    Clicked="ViewNews_Clicked"/>
+        </StackLayout>
     </ScrollView>
+
 </ContentPage>

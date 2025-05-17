@@ -11,5 +11,6 @@ namespace TestAppB.Models
         public string Description { get; set; }
         public bool IsUnlocked { get; set; }
         public string Icon { get; set; }
+        public DateTime UnlockTime { get; set; } // Новое свойство для хранения времени разблокировки
     }
 }

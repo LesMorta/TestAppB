@@ -1,392 +1,434 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using Xamarin.Essentials;
-using TestAppB.Services;
 using TestAppB.Models;
-
+using TestAppB.Services;
+using Xamarin.Essentials;
+using System.Threading.Tasks;
 
 namespace TestAppB.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class PlantPage : ContentPage
     {
-        private int waterCount;
-        private int appOpenCount;
-        private DateTime lastOpenDate;
-        private int consecutiveDays = 0;
-        private Random random = new Random();
-
-        private const string StatusKey = "plant_watered";
-        private const string LastWateredKey = "plant_last_watered";
-        private const string LastOpenDateKey = "last_open_date";
-        private const string ConsecutiveDaysKey = "consecutive_days";
-
-        // Советы по уходу за растениями
-        private string[] plantTips = new string[]
+        private List<Plant> plants;
+        private readonly string[] tips = new string[]
         {
-            "Большинство комнатных растений предпочитают яркий непрямой свет.",
-            "Поливайте растения рано утром или вечером, чтобы избежать быстрого испарения.",
-            "Многие растения любят влажный воздух — можно использовать увлажнитель.",
-            "Удобряйте растения весной и летом, когда они активно растут.",
-            "Регулярно очищайте листья растений от пыли мягкой влажной тканью.",
-            "Поворачивайте горшки с растениями, чтобы обеспечить равномерный рост.",
-            "Большинство растений не любят сквозняки.",
-            "Пересаживайте комнатные растения раз в 1-2 года для здоровья корней.",
-            "Желтеющие листья могут быть признаком чрезмерного полива.",
-            "Коричневые кончики листьев часто указывают на сухой воздух.",
-            "Не ставьте растения рядом с отопительными приборами."
+            "Не забывайте, что разные растения требуют разного режима полива. Проверяйте почву перед каждым поливом!",
+            "Большинство комнатных растений предпочитают яркий непрямой свет. Избегайте размещать их под прямыми солнечными лучами.",
+            "Используйте воду комнатной температуры для полива. Холодная вода может вызвать шок у растений.",
+            "Не ставьте растения возле обогревателей или кондиционеров - резкие перепады температуры вредны для них.",
+            "Регулярно очищайте листья растений от пыли влажной тканью. Это помогает им лучше дышать.",
+            "Если у растения желтеют листья, это может быть признаком чрезмерного полива. Дайте почве просохнуть перед следующим поливом."
         };
 
         public PlantPage()
         {
             InitializeComponent();
-            CheckPlantStatus();
-            SetGreeting();
-            ShowRandomTip();
-            UpdateLastAchievement();
-        }
-
-        private void SetGreeting()
-        {
-            int hour = DateTime.Now.Hour;
-            string greeting;
-
-            if (hour >= 5 && hour < 12)
-                greeting = "Доброе утро! 🌞";
-            else if (hour >= 12 && hour < 18)
-                greeting = "Добрый день! 🌤";
-            else if (hour >= 18 && hour < 22)
-                greeting = "Добрый вечер! 🌙";
-            else
-                greeting = "Доброй ночи! ✨";
-
-            greetingLabel.Text = greeting;
-        }
-
-        private void ShowRandomTip()
-        {
-            int tipIndex = random.Next(plantTips.Length);
-            plantTipDetailLabel.Text = plantTips[tipIndex];
-        }
-
-        private void UpdateLastAchievement()
-        {
-            // Находим последнее разблокированное достижение
-            Achievement lastAchievement = null;
-
-            foreach (var ach in AchievementService.AllAchievements)
-            {
-                if (Preferences.Get($"Ach_{ach.Id}", false))
-                {
-                    lastAchievement = ach;
-                }
-            }
-
-            if (lastAchievement != null)
-            {
-                lastAchievementIcon.Source = lastAchievement.Icon;
-                lastAchievementLabel.Text = lastAchievement.Title;
-            }
-        }
-
-        private void CheckPlantStatus()
-        {
-            string lastWateredString = Preferences.Get(LastWateredKey, null);
-            bool isWatered = Preferences.Get(StatusKey, false);
-
-            if (!string.IsNullOrEmpty(lastWateredString))
-            {
-                DateTime lastWatered = DateTime.Parse(lastWateredString);
-
-                if ((DateTime.Now - lastWatered).TotalHours >= 24)
-                {
-                    isWatered = false;
-                    Preferences.Set(StatusKey, false);
-                }
-
-                TimeSpan timeSinceWatered = DateTime.Now - lastWatered;
-
-                lastWateredLabel.Text = $"Последний полив: {lastWatered.ToString("dd MMMM HH:mm")}";
-
-                // Показываем примерное время до следующего полива
-                if (isWatered)
-                {
-                    TimeSpan timeRemaining = TimeSpan.FromHours(24) - timeSinceWatered;
-                    nextWateringLabel.Text = $"Следующий полив через: {FormatTimeSpan(timeRemaining)}";
-                }
-                else
-                {
-                    nextWateringLabel.Text = "Растению требуется полив!";
-                }
-            }
-            else
-            {
-                lastWateredLabel.Text = "Растение ещё не поливали";
-                nextWateringLabel.Text = "Растению требуется полив!";
-            }
-
-            UpdateUI(isWatered);
-        }
-
-        private string FormatTimeSpan(TimeSpan timeSpan)
-        {
-            if (timeSpan.TotalHours >= 1)
-            {
-                return $"{(int)timeSpan.TotalHours} ч {timeSpan.Minutes} мин";
-            }
-            else
-            {
-                return $"{timeSpan.Minutes} мин";
-            }
-        }
-
-        private void UpdateUI(bool isWatered)
-        {
-            if (isWatered)
-            {
-                statusLabel.Text = "Растение полито 🌿";
-                plantImage.Source = "plant_watered.png";
-            }
-            else
-            {
-                statusLabel.Text = "Растению нужна вода 💧";
-                plantImage.Source = "plant_dry.png";
-            }
-        }
-
-        private async void WaterButton_Clicked(object sender, EventArgs e)
-        {
-            waterCount = Preferences.Get("WaterCount", 0) + 1;
-            Preferences.Set("WaterCount", waterCount);
-
-            CheckWaterTimeAchievements();
-            CheckSeasonsAchievements();
-
-            Preferences.Set(StatusKey, true);
-            Preferences.Set(LastWateredKey, DateTime.Now.ToString());
-            CheckPlantStatus();
-
-            CheckAchievements();
-            UpdateLastAchievement();
-
-            // Добавим небольшую анимацию при поливе
-            await plantImage.ScaleTo(1.1, 250, Easing.SpringOut);
-            await plantImage.ScaleTo(1.0, 250, Easing.SpringIn);
-        }
-
-        private void OpenPlantsPage_Clicked(object sender, EventArgs e)
-        {
-            Navigation.PushModalAsync(new MyPlantsPage());
+            LoadData();
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-
-            appOpenCount = Preferences.Get("AppOpenCount", 0) + 1;
-            Preferences.Set("AppOpenCount", appOpenCount);
-
-            // Перевірка послідовних днів входу
-            string lastOpenDateStr = Preferences.Get(LastOpenDateKey, DateTime.MinValue.ToString());
-            if (DateTime.TryParse(lastOpenDateStr, out lastOpenDate))
-            {
-                DateTime today = DateTime.Today;
-                TimeSpan difference = today - lastOpenDate.Date;
-
-                if (difference.Days == 1)
-                {
-                    // Послідовний день
-                    consecutiveDays = Preferences.Get(ConsecutiveDaysKey, 0) + 1;
-                    Preferences.Set(ConsecutiveDaysKey, consecutiveDays);
-                }
-                else if (difference.Days > 1)
-                {
-                    // Розрив послідовності
-                    consecutiveDays = 1;
-                    Preferences.Set(ConsecutiveDaysKey, consecutiveDays);
-                }
-                // Якщо той самий день, нічого не змінюємо
-            }
-            else
-            {
-                consecutiveDays = 1;
-                Preferences.Set(ConsecutiveDaysKey, consecutiveDays);
-            }
-
-            // Зберігаємо поточну дату як останню дату входу
-            Preferences.Set(LastOpenDateKey, DateTime.Today.ToString());
-
-            CheckAchievements();
-            SetGreeting();
-            ShowRandomTip();
+            LoadData();
             UpdateLastAchievement();
-        }
 
-        private void CheckAchievements()
-        {
-            int plantCount = 0;
-            if (Application.Current.Properties.ContainsKey("plants"))
+            // Обновляем достижение за вход в приложение
+            int appOpenCount = Preferences.Get("app_open_count", 0) + 1;
+            Preferences.Set("app_open_count", appOpenCount);
+
+            // Проверяем достижения за открытие приложения
+            if (appOpenCount == 5)
             {
-                var json = Application.Current.Properties["plants"] as string;
-                var plants = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Plant>>(json);
-                plantCount = plants?.Count ?? 0;
-            }
-
-            foreach (var ach in AchievementService.AllAchievements)
-            {
-                if (Preferences.Get($"Ach_{ach.Id}", false))
-                    continue;
-
-                switch (ach.Id)
-                {
-                    // Існуючі досягнення
-                    case "first_water":
-                        if (waterCount >= 1) Unlock(ach);
-                        break;
-                    case "ten_waters":
-                        if (waterCount >= 10) Unlock(ach);
-                        break;
-                    case "open_app_5":
-                        if (appOpenCount >= 5) Unlock(ach);
-                        break;
-
-                    // Нові досягнення поливу
-                    case "fifty_waters":
-                        if (waterCount >= 50) Unlock(ach);
-                        break;
-                    case "hundred_waters":
-                        if (waterCount >= 100) Unlock(ach);
-                        break;
-                    case "five_hundred_waters":
-                        if (waterCount >= 500) Unlock(ach);
-                        break;
-
-                    // Досягнення за кількість рослин
-                    case "three_plants":
-                        if (plantCount >= 3) Unlock(ach);
-                        break;
-                    case "ten_plants":
-                        if (plantCount >= 10) Unlock(ach);
-                        break;
-                    case "twenty_plants":
-                        if (plantCount >= 20) Unlock(ach);
-                        break;
-
-                    // Досягнення за регулярність
-                    case "daily_3":
-                        if (consecutiveDays >= 3) Unlock(ach);
-                        break;
-                    case "daily_7":
-                        if (consecutiveDays >= 7) Unlock(ach);
-                        break;
-                    case "daily_30":
-                        if (consecutiveDays >= 30) Unlock(ach);
-                        break;
-
-                        // Інші досягнення перевіряються в інших методах
-                }
+                AchievementService.UnlockAchievement("open_app_5");
+                UpdateLastAchievement(); // Обновляем отображение, если достижение получено
             }
         }
 
-        private void CheckWaterTimeAchievements()
+        private void LoadData()
         {
-            int currentHour = DateTime.Now.Hour;
+            // Загружаем растения из хранилища
+            plants = LoadPlants();
+            plantsCollectionView.ItemsSource = plants;
 
-            // Перевірка досягнень за часом поливу
-            if (currentHour >= 6 && currentHour < 10 && !Preferences.Get("Ach_morning_water", false))
+            // Обновляем статистику
+            totalPlantsLabel.Text = plants.Count.ToString();
+            wateredPlantsLabel.Text = plants.Count(p => p.IsWatered).ToString();
+
+            // Определяем, нужно ли показывать пустой список
+            emptyPlantsLayout.IsVisible = plants.Count == 0;
+            plantsCollectionView.IsVisible = plants.Count > 0;
+
+            // Обновляем дату и совет дня
+            dateTimeLabel.Text = $"{DateTime.Now:dddd, d MMMM} • Прекрасный день для растений!";
+            tipOfDayLabel.Text = GetRandomTip();
+
+            // Обновляем количество разблокированных достижений
+            var achievements = AchievementService.GetAchievements();
+            achievementsLabel.Text = achievements.Count(a => a.IsUnlocked).ToString();
+        }
+
+        private void UpdateLastAchievement()
+        {
+            // Получаем последнее разблокированное достижение
+            var lastAchievement = AchievementService.GetLastUnlockedAchievement();
+
+            if (lastAchievement != null)
             {
-                Unlock(AchievementService.AllAchievements.FirstOrDefault(a => a.Id == "morning_water"));
-            }
+                lastAchievementLayout.IsVisible = true;
+                noAchievementLayout.IsVisible = false;
 
-            if (currentHour >= 18 && currentHour < 22 && !Preferences.Get("Ach_evening_water", false))
-            {
-                Unlock(AchievementService.AllAchievements.FirstOrDefault(a => a.Id == "evening_water"));
-            }
+                lastAchievementTitle.Text = lastAchievement.Title;
+                lastAchievementDescription.Text = lastAchievement.Description;
+                lastAchievementIcon.Source = lastAchievement.Icon;
 
-            if ((currentHour >= 23 || currentHour < 5) && !Preferences.Get("Ach_night_owl", false))
-            {
-                Unlock(AchievementService.AllAchievements.FirstOrDefault(a => a.Id == "night_owl"));
-            }
-
-            // Перевірка для досягнення вихідного дня
-            if ((DateTime.Now.DayOfWeek == DayOfWeek.Saturday || DateTime.Now.DayOfWeek == DayOfWeek.Sunday))
-            {
-                string weekendKey = $"Weekend_{DateTime.Now.Year}_{GetIso8601WeekOfYear(DateTime.Now)}";
-
-                if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday)
+                // Форматируем время получения
+                if (lastAchievement.UnlockTime > DateTime.MinValue)
                 {
-                    Preferences.Set($"{weekendKey}_Saturday", true);
+                    TimeSpan timeAgo = DateTime.Now - lastAchievement.UnlockTime;
+                    if (timeAgo.TotalDays < 1)
+                    {
+                        if (timeAgo.TotalHours < 1)
+                            lastAchievementTime.Text = "Получено только что";
+                        else
+                            lastAchievementTime.Text = $"Получено {(int)timeAgo.TotalHours} ч. назад";
+                    }
+                    else if (timeAgo.TotalDays < 30)
+                    {
+                        lastAchievementTime.Text = $"Получено {(int)timeAgo.TotalDays} дн. назад";
+                    }
+                    else
+                    {
+                        lastAchievementTime.Text = $"Получено {lastAchievement.UnlockTime:dd.MM.yyyy}";
+                    }
                 }
                 else
                 {
-                    Preferences.Set($"{weekendKey}_Sunday", true);
+                    lastAchievementTime.Text = "Получено ранее";
                 }
+            }
+            else
+            {
+                lastAchievementLayout.IsVisible = false;
+                noAchievementLayout.IsVisible = true;
+            }
+        }
 
-                // Якщо обидва дні виконані, відкриваємо досягнення
-                if (Preferences.Get($"{weekendKey}_Saturday", false) &&
-                    Preferences.Get($"{weekendKey}_Sunday", false) &&
-                    !Preferences.Get("Ach_weekend_care", false))
+        private List<Plant> LoadPlants()
+        {
+            try
+            {
+                // Загружаем сохраненные растения
+                string savedPlantsJson = Preferences.Get("saved_plants", string.Empty);
+                if (!string.IsNullOrEmpty(savedPlantsJson))
                 {
-                    Unlock(AchievementService.AllAchievements.FirstOrDefault(a => a.Id == "weekend_care"));
+                    var loadedPlants = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Plant>>(savedPlantsJson);
+
+                    // Проверяем и инициализируем поля, которые могут быть null после десериализации
+                    foreach (var plant in loadedPlants)
+                    {
+                        if (plant.Notes == null)
+                            plant.Notes = new List<PlantNote>();
+                    }
+
+                    return loadedPlants;
+                }
+
+                // Если нет сохраненных растений, возвращаем пустой список
+                return new List<Plant>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка загрузки растений: {ex.Message}");
+                return new List<Plant>();
+            }
+        }
+
+        private void SavePlants()
+        {
+            try
+            {
+                string json = Newtonsoft.Json.JsonConvert.SerializeObject(plants);
+                Preferences.Set("saved_plants", json);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка сохранения растений: {ex.Message}");
+            }
+        }
+
+        private string GetRandomTip()
+        {
+            Random random = new Random();
+            return tips[random.Next(tips.Length)];
+        }
+
+        private async void AddPlant_Clicked(object sender, EventArgs e)
+        {
+            // Диалог для ввода имени растения
+            string plantName = await DisplayPromptAsync("Новое растение",
+                "Введите название вашего растения",
+                "Добавить", "Отмена",
+                "Например: Фикус, Орхидея...");
+
+            if (!string.IsNullOrWhiteSpace(plantName))
+            {
+                // Создаем новое растение
+                Plant newPlant = new Plant
+                {
+                    Name = plantName,
+                    IsWatered = false,
+                    LastWatered = DateTime.MinValue
+                };
+
+                // Добавляем в коллекцию
+                plants.Add(newPlant);
+                SavePlants();
+                LoadData();
+
+                // Проверяем достижения по количеству растений
+                CheckPlantCountAchievements();
+            }
+        }
+
+        private async void WaterPlant_Clicked(object sender, EventArgs e)
+        {
+            // Получаем название растения из параметра команды
+            string plantName = (string)((Button)sender).CommandParameter;
+
+            // Находим растение в коллекции
+            Plant plant = plants.FirstOrDefault(p => p.Name == plantName);
+            if (plant != null)
+            {
+                // Обновляем статус полива
+                plant.IsWatered = true;
+                plant.LastWatered = DateTime.Now;
+                SavePlants();
+                LoadData();
+
+                // Анимация успешного полива
+                await AnimateWateringSuccess(sender);
+
+                // Проверяем достижения полива
+                CheckWateringAchievements();
+            }
+        }
+
+        private async Task AnimateWateringSuccess(object sender)
+        {
+            if (sender is Button button)
+            {
+                // Анимация для кнопки полива
+                await button.ScaleTo(1.2, 150);
+                await button.ScaleTo(1.0, 150);
+            }
+        }
+
+        private async void PlantDetails_Tapped(object sender, EventArgs e)
+        {
+            // Получаем имя растения из параметра команды
+            string plantName = (string)((TapGestureRecognizer)((Frame)sender).GestureRecognizers[0]).CommandParameter;
+
+            // Находим растение в коллекции
+            Plant plant = plants.FirstOrDefault(p => p.Name == plantName);
+            if (plant != null)
+            {
+                // Показываем контекстное меню
+                string action = await DisplayActionSheet(
+                    $"Действия с растением: {plant.Name}",
+                    "Отмена",
+                    null,
+                    "Отобразить цветок",
+                    "Переименовать",
+                    "Добавить запись",
+                    "Удалить");
+
+                switch (action)
+                {
+                    case "Отобразить цветок":
+                        // Используем PushModalAsync вместо PushAsync
+                        await Navigation.PushModalAsync(new PlantDisplayPage(plant, plants, SavePlants));
+                        break;
+
+                    case "Переименовать":
+                        await RenamePlant(plant);
+                        break;
+
+                    case "Добавить запись":
+                        // Используем PushModalAsync вместо PushAsync
+                        await Navigation.PushModalAsync(new PlantNotesPage(plant, SavePlants));
+                        break;
+
+                    case "Удалить":
+                        await DeletePlant(plant);
+                        break;
                 }
             }
         }
 
-        private void CheckSeasonsAchievements()
+        private async Task RenamePlant(Plant plant)
         {
-            int month = DateTime.Now.Month;
+            // Диалог для переименования растения
+            string newName = await DisplayPromptAsync(
+                "Переименование",
+                "Введите новое название для растения",
+                "Сохранить",
+                "Отмена",
+                initialValue: plant.Name);
 
-            // Визначення сезону
-            if (month >= 3 && month <= 5 && !Preferences.Get("Ach_spring_water", false))
+            if (!string.IsNullOrWhiteSpace(newName) && newName != plant.Name)
             {
-                // Весна
-                Unlock(AchievementService.AllAchievements.FirstOrDefault(a => a.Id == "spring_water"));
-            }
-            else if (month >= 6 && month <= 8 && !Preferences.Get("Ach_summer_water", false))
-            {
-                // Літо
-                Unlock(AchievementService.AllAchievements.FirstOrDefault(a => a.Id == "summer_water"));
-            }
-            else if (month >= 9 && month <= 11 && !Preferences.Get("Ach_autumn_water", false))
-            {
-                // Осінь
-                Unlock(AchievementService.AllAchievements.FirstOrDefault(a => a.Id == "autumn_water"));
-            }
-            else if ((month == 12 || month <= 2) && !Preferences.Get("Ach_winter_water", false))
-            {
-                // Зима
-                Unlock(AchievementService.AllAchievements.FirstOrDefault(a => a.Id == "winter_water"));
+                // Проверяем, нет ли уже растения с таким именем
+                if (plants.Any(p => p.Name == newName))
+                {
+                    await DisplayAlert("Ошибка", "Растение с таким названием уже существует", "OK");
+                    return;
+                }
+
+                // Запоминаем старое имя для проверки достижения
+                string oldName = plant.Name;
+
+                // Обновляем имя
+                plant.Name = newName;
+
+                // Сохраняем изменения
+                SavePlants();
+                LoadData();
+
+                // Разблокируем достижение за переименование растения
+                AchievementService.UnlockAchievement("rename_plant");
+                UpdateLastAchievement();
+
+                await DisplayAlert("Готово", $"Растение переименовано с \"{oldName}\" на \"{newName}\"", "OK");
             }
         }
-
-        private async void Unlock(Achievement achievement)
+        private async Task DeletePlant(Plant plant)
         {
-            if (achievement == null) return;
+            // Запрашиваем подтверждение удаления
+            bool confirm = await DisplayAlert(
+                "Удаление растения",
+                $"Вы уверены, что хотите удалить растение \"{plant.Name}\"?",
+                "Да, удалить",
+                "Отмена");
 
-            Preferences.Set($"Ach_{achievement.Id}", true);
-            await DisplayAlert("Досягнення!", $"Отримано: {achievement.Title}", "ОК");
+            if (confirm)
+            {
+                // Удаляем растение из коллекции
+                plants.Remove(plant);
+
+                // Сохраняем изменения
+                SavePlants();
+                LoadData();
+
+                // Разблокируем достижение за удаление растения
+                AchievementService.UnlockAchievement("delete_plant");
+                UpdateLastAchievement();
+
+                await DisplayAlert("Готово", $"Растение \"{plant.Name}\" удалено", "OK");
+            }
+        }
+        private void CheckWateringAchievements()
+        {
+            // Считаем общее количество поливов
+            int totalWaterings = Preferences.Get("total_waterings", 0) + 1;
+            Preferences.Set("total_waterings", totalWaterings);
+
+            // Проверяем достижения за количество поливов
+            if (totalWaterings == 1)
+                AchievementService.UnlockAchievement("first_water");
+            else if (totalWaterings == 10)
+                AchievementService.UnlockAchievement("ten_waters");
+            else if (totalWaterings == 50)
+                AchievementService.UnlockAchievement("fifty_waters");
+            else if (totalWaterings == 100)
+                AchievementService.UnlockAchievement("hundred_waters");
+            else if (totalWaterings == 500)
+                AchievementService.UnlockAchievement("five_hundred_waters");
+
+            // Проверяем достижения за время суток
+            int hour = DateTime.Now.Hour;
+            if (hour >= 6 && hour < 10)
+                AchievementService.UnlockAchievement("morning_water");
+            else if (hour >= 18 && hour < 22)
+                AchievementService.UnlockAchievement("evening_water");
+            else if (hour >= 23 || hour < 5)
+                AchievementService.UnlockAchievement("night_owl");
+
+            // Проверяем достижение за полив всех растений
+            if (plants.Count > 0 && plants.All(p => p.IsWatered))
+                AchievementService.UnlockAchievement("water_all");
+
+            // Проверяем сезонные достижения
+            int month = DateTime.Now.Month;
+            if (month >= 3 && month <= 5) // Весна
+                AchievementService.UnlockAchievement("spring_water");
+            else if (month >= 6 && month <= 8) // Лето
+                AchievementService.UnlockAchievement("summer_water");
+            else if (month >= 9 && month <= 11) // Осень
+                AchievementService.UnlockAchievement("autumn_water");
+            else // Зима (декабрь, январь, февраль)
+                AchievementService.UnlockAchievement("winter_water");
+
+            // Проверяем достижение за выходные
+            if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday || DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
+            {
+                bool saturdayWatered = Preferences.Get("saturday_watered", false);
+                bool sundayWatered = Preferences.Get("sunday_watered", false);
+
+                if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday)
+                    Preferences.Set("saturday_watered", true);
+                else if (DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
+                    Preferences.Set("sunday_watered", true);
+
+                // Если в эти выходные поливали в обе дни
+                if ((DateTime.Now.DayOfWeek == DayOfWeek.Saturday && sundayWatered) ||
+                    (DateTime.Now.DayOfWeek == DayOfWeek.Sunday && saturdayWatered))
+                {
+                    AchievementService.UnlockAchievement("weekend_care");
+                }
+
+                // Сбрасываем статус в начале новой недели
+                if (DateTime.Now.DayOfWeek == DayOfWeek.Monday)
+                {
+                    Preferences.Set("saturday_watered", false);
+                    Preferences.Set("sunday_watered", false);
+                }
+            }
+
+            // Обновляем отображение достижений
             UpdateLastAchievement();
         }
 
-        // Допоміжний метод для визначення номера тижня
-        private int GetIso8601WeekOfYear(DateTime date)
+        private void CheckPlantCountAchievements()
         {
-            var day = System.Globalization.CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(date);
-            if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
-            {
-                date = date.AddDays(3);
-            }
+            // Проверяем достижения за количество растений
+            int plantCount = plants.Count;
 
-            return System.Globalization.CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(
-                date,
-                System.Globalization.CalendarWeekRule.FirstFourDayWeek,
-                DayOfWeek.Monday);
+            if (plantCount >= 3)
+                AchievementService.UnlockAchievement("three_plants");
+            if (plantCount >= 10)
+                AchievementService.UnlockAchievement("ten_plants");
+            if (plantCount >= 20)
+                AchievementService.UnlockAchievement("twenty_plants");
+
+            // Обновляем отображение достижений
+            UpdateLastAchievement();
+        }
+
+        private void ViewAllAchievements_Clicked(object sender, EventArgs e)
+        {
+            // Переходим на страницу достижений
+            ((TabbedPage)Parent).CurrentPage = ((TabbedPage)Parent).Children[1]; // Предполагается, что AchievementsPage - второй таб
+        }
+
+        private void ViewNews_Clicked(object sender, EventArgs e)
+        {
+            // Переходим на страницу новостей
+            ((TabbedPage)Parent).CurrentPage = ((TabbedPage)Parent).Children[2]; // Предполагается, что NewsPage - третий таб
         }
     }
 }
