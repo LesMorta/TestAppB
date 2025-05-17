@@ -14,11 +14,18 @@ namespace TestAppB.Views
         private Plant _plant;
         private readonly Action _saveCallback;
 
-        // Масиви імен зображень для кожного скіна (сухий і политий стан)
-        private readonly string[] _plantSkins = {
+        // Масиви імен зображень для кожного скіна у политому стані
+        private readonly string[] _wateredPlantSkins = {
             "plant_watered.png",
             "plant_watered_1.png",
             "plant_watered_2.png"
+        };
+
+        // Масиви імен зображень для кожного скіна у сухому стані
+        private readonly string[] _dryPlantSkins = {
+            "plant_dry.png",
+            "plant_dry_1.png",
+            "plant_dry_2.png"
         };
 
         // Масив фреймів скінів для стилізації вибраного скіна
@@ -110,10 +117,19 @@ namespace TestAppB.Views
         private void UpdatePlantImage()
         {
             // Перевіряємо індекс скіна в допустимих межах
-            int skinIndex = Math.Min(Math.Max(_plant.SkinIndex, 0), _plantSkins.Length - 1);
+            int skinIndex = Math.Min(Math.Max(_plant.SkinIndex, 0), _wateredPlantSkins.Length - 1);
 
-            // Встановлюємо зображення відповідно до вибраного скіна
-            plantImage.Source = _plantSkins[skinIndex];
+            // Вибираємо зображення залежно від статусу поливу
+            if (_plant.IsWatered)
+            {
+                // Якщо рослина полита, використовуємо зображення политої рослини
+                plantImage.Source = _wateredPlantSkins[skinIndex];
+            }
+            else
+            {
+                // Якщо рослина не полита, використовуємо зображення сухої рослини
+                plantImage.Source = _dryPlantSkins[skinIndex];
+            }
         }
 
         private void UpdateSelectedSkinFrame()
@@ -156,7 +172,7 @@ namespace TestAppB.Views
             // Анімація зникнення
             await plantImage.FadeTo(0.3, 300);
 
-            // Оновлюємо зображення (хоча для политої рослини зображення не змінюється)
+            // Оновлюємо зображення на політу рослину
             UpdatePlantImage();
 
             // Анімація появи
@@ -171,7 +187,7 @@ namespace TestAppB.Views
             if (tapGesture != null && int.TryParse((string)tapGesture.CommandParameter, out int selectedSkinIndex))
             {
                 // Перевіряємо, що індекс в допустимому діапазоні
-                if (selectedSkinIndex >= 0 && selectedSkinIndex < _plantSkins.Length)
+                if (selectedSkinIndex >= 0 && selectedSkinIndex < _wateredPlantSkins.Length)
                 {
                     // Якщо це вже вибраний скін, не робимо нічого
                     if (_plant.SkinIndex == selectedSkinIndex)

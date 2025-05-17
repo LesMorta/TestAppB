@@ -1,8 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+﻿<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
             xmlns:views="clr-namespace:TestAppB.Views"
-            x:Class="TestAppB.MainPage">
+            x:Class="TestAppB.MainPage"
+            BarBackgroundColor="#4CAF50"
+            SelectedTabColor="White"
+            UnselectedTabColor="#E8F5E9">
 
     <views:PlantPage Title="Рослини"/>
     <views:AchievementsPage Title="Досягнення"/>

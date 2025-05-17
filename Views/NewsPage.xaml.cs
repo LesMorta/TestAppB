@@ -111,12 +111,12 @@ namespace TestAppB.Views
                 }
                 else
                 {
-                    await DisplayAlert("Информация", "Не удалось обновить новости", "OK");
+                    await DisplayAlert("Інформація", "Не вдалось оновити новини", "OK");
                 }
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Ошибка", $"Ошибка при обновлении: {ex.Message}", "OK");
+                await DisplayAlert("Помилка", $"Помилка при оновлені: {ex.Message}", "OK");
             }
             finally
             {

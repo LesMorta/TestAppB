@@ -48,7 +48,7 @@
     <Grid RowDefinitions="Auto, *">
         <!-- Заголовок страницы -->
         <StackLayout Grid.Row="0">
-            <Label Text="📰 Новости и советы" 
+            <Label Text="📰 Новини та поради" 
                    Style="{StaticResource PageTitleStyle}"/>
 
             <!-- Категории новостей -->
@@ -63,7 +63,7 @@
                         <Frame.GestureRecognizers>
                             <TapGestureRecognizer Tapped="CategoryAll_Tapped"/>
                         </Frame.GestureRecognizers>
-                        <Label Text="Все" 
+                        <Label Text="Всі" 
                                TextColor="White" 
                                FontSize="13" 
                                FontAttributes="Bold"
@@ -75,9 +75,9 @@
                            Padding="12,6" 
                            HasShadow="False">
                         <Frame.GestureRecognizers>
-                            <TapGestureRecognizer CommandParameter="Советы" Tapped="Category_Tapped"/>
+                            <TapGestureRecognizer CommandParameter="Поради" Tapped="Category_Tapped"/>
                         </Frame.GestureRecognizers>
-                        <Label Text="Советы" 
+                        <Label Text="Поради" 
                                TextColor="#00796B" 
                                FontSize="13"/>
                     </Frame>
@@ -87,9 +87,9 @@
                            Padding="12,6" 
                            HasShadow="False">
                         <Frame.GestureRecognizers>
-                            <TapGestureRecognizer CommandParameter="Растения" Tapped="Category_Tapped"/>
+                            <TapGestureRecognizer CommandParameter="Рослини" Tapped="Category_Tapped"/>
                         </Frame.GestureRecognizers>
-                        <Label Text="Растения" 
+                        <Label Text="Рослини" 
                                TextColor="#00796B" 
                                FontSize="13"/>
                     </Frame>
@@ -111,9 +111,9 @@
                            Padding="12,6" 
                            HasShadow="False">
                         <Frame.GestureRecognizers>
-                            <TapGestureRecognizer CommandParameter="Уход" Tapped="Category_Tapped"/>
+                            <TapGestureRecognizer CommandParameter="Догляд" Tapped="Category_Tapped"/>
                         </Frame.GestureRecognizers>
-                        <Label Text="Уход" 
+                        <Label Text="Догляд" 
                                TextColor="#00796B" 
                                FontSize="13"/>
                     </Frame>
@@ -123,9 +123,9 @@
                            Padding="12,6" 
                            HasShadow="False">
                         <Frame.GestureRecognizers>
-                            <TapGestureRecognizer CommandParameter="Размножение" Tapped="Category_Tapped"/>
+                            <TapGestureRecognizer CommandParameter="Розмноження" Tapped="Category_Tapped"/>
                         </Frame.GestureRecognizers>
-                        <Label Text="Размножение" 
+                        <Label Text="Розмноження" 
                                TextColor="#00796B" 
                                FontSize="13"/>
                     </Frame>
@@ -135,9 +135,9 @@
                            Padding="12,6" 
                            HasShadow="False">
                         <Frame.GestureRecognizers>
-                            <TapGestureRecognizer CommandParameter="Лечение" Tapped="Category_Tapped"/>
+                            <TapGestureRecognizer CommandParameter="Лікування" Tapped="Category_Tapped"/>
                         </Frame.GestureRecognizers>
-                        <Label Text="Лечение" 
+                        <Label Text="Лікування" 
                                TextColor="#00796B" 
                                FontSize="13"/>
                     </Frame>
@@ -277,16 +277,16 @@
                                HeightRequest="120" 
                                Aspect="AspectFit" 
                                Margin="0,0,0,20"/>
-                        <Label Text="Новости не найдены" 
+                        <Label Text="Новини не знайдено" 
                                FontSize="18" 
                                TextColor="#546E7A" 
                                HorizontalTextAlignment="Center"/>
-                        <Label Text="Проверьте подключение к интернету или попробуйте обновить" 
+                        <Label Text="Перевірте підключення до інтернету або спробуйте оновити" 
                                FontSize="14" 
                                TextColor="#78909C" 
                                HorizontalTextAlignment="Center" 
                                Margin="0,10"/>
-                        <Button Text="Обновить" 
+                        <Button Text="Оновити" 
                                 Clicked="RefreshButton_Clicked" 
                                 BackgroundColor="#4CAF50" 
                                 TextColor="White" 

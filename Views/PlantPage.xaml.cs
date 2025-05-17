@@ -78,12 +78,12 @@ namespace TestAppB.Views
 
             if (lastAchievement != null)
             {
-                lastAchievementLayout.IsVisible = true;
-                noAchievementLayout.IsVisible = false;
-
+                // Оновлюємо текстові поля
                 lastAchievementTitle.Text = lastAchievement.Title;
                 lastAchievementDescription.Text = lastAchievement.Description;
-                lastAchievementIcon.Source = lastAchievement.Icon;
+
+                // Зображення не змінюємо! Воно фіксоване в XAML як "achievements.png"
+                // lastAchievementIcon.Source = lastAchievement.Icon; -- цей рядок видалено
 
                 // Форматуємо час отримання
                 if (lastAchievement.UnlockTime > DateTime.MinValue)
@@ -92,7 +92,7 @@ namespace TestAppB.Views
                     if (timeAgo.TotalDays < 1)
                     {
                         if (timeAgo.TotalHours < 1)
-                            lastAchievementTime.Text = "";
+                            lastAchievementTime.Text = "Отримано щойно";
                         else
                             lastAchievementTime.Text = $"Отримано {(int)timeAgo.TotalHours} год. тому";
                     }
@@ -112,8 +112,10 @@ namespace TestAppB.Views
             }
             else
             {
-                lastAchievementLayout.IsVisible = false;
-                noAchievementLayout.IsVisible = true;
+                // Якщо немає досягнень, встановлюємо дефолтні значення
+                lastAchievementTitle.Text = "Немає досягнень";
+                lastAchievementDescription.Text = "Доглядайте за рослинами, щоб отримати перше досягнення!";
+                lastAchievementTime.Text = "";
             }
         }
 

@@ -44,7 +44,7 @@
     <Grid RowDefinitions="Auto, Auto, *">
         <!-- Заголовок -->
         <Label Grid.Row="0" 
-               Text="🏆 Достижения"
+               Text="🏆 Досягненя"
                Style="{StaticResource PageTitleStyle}"/>
 
         <!-- Статистика достижений -->
