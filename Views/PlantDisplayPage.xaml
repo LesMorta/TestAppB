@@ -47,6 +47,21 @@
                 <Setter Property="Margin" Value="15,10"/>
                 <Setter Property="BorderColor" Value="#E0F2F1"/>
             </Style>
+
+            <Style x:Key="SkinFrameStyle" TargetType="Frame">
+                <Setter Property="BorderColor" Value="#E0F2F1"/>
+                <Setter Property="CornerRadius" Value="10"/>
+                <Setter Property="Padding" Value="5"/>
+                <Setter Property="Margin" Value="5"/>
+                <Setter Property="HeightRequest" Value="90"/>
+                <Setter Property="WidthRequest" Value="90"/>
+                <Setter Property="BackgroundColor" Value="#F9FFFE"/>
+            </Style>
+
+            <Style x:Key="SelectedSkinFrameStyle" TargetType="Frame" BasedOn="{StaticResource SkinFrameStyle}">
+                <Setter Property="BorderColor" Value="#66BB6A"/>
+                <Setter Property="BackgroundColor" Value="#E8F5E9"/>
+            </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -68,7 +83,7 @@
                    Padding="0"
                    Margin="0,10,0,20">
                 <Image x:Name="plantImage" 
-                       Source="plant_default_dry.png" 
+                       Source="plant_watered.png" 
                        HeightRequest="280" 
                        WidthRequest="280" 
                        Aspect="AspectFit"/>
@@ -88,78 +103,43 @@
                            Style="{StaticResource SubHeaderLabelStyle}"
                            Margin="0,0,0,15"/>
 
-                    <Grid RowDefinitions="Auto,Auto" 
-                          ColumnDefinitions="*,*,*" 
-                          HorizontalOptions="Center" 
-                          Margin="0,0,0,10">
+                    <StackLayout Orientation="Horizontal" 
+                                HorizontalOptions="Center" 
+                                Margin="0,0,0,10">
 
-                        <!-- Первый ряд скинов (3) -->
-                        <Frame Grid.Row="0" Grid.Column="0" 
-                               BorderColor="#E0F2F1" 
-                               CornerRadius="10" 
-                               Padding="5" 
-                               Margin="5">
+                        <!-- Дефолтний скін -->
+                        <Frame x:Name="skinFrame0"
+                               Style="{StaticResource SkinFrameStyle}">
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="SkinSelected_Tapped" CommandParameter="0"/>
                             </Frame.GestureRecognizers>
-                            <Image Source="plant_skin1.png" 
-                                   HeightRequest="90" 
+                            <Image Source="plant_watered.png" 
+                                   HeightRequest="70" 
                                    Aspect="AspectFit"/>
                         </Frame>
 
-                        <Frame Grid.Row="0" Grid.Column="1" 
-                               BorderColor="#E0F2F1" 
-                               CornerRadius="10" 
-                               Padding="5" 
-                               Margin="5">
+                        <!-- Скін 1 -->
+                        <Frame x:Name="skinFrame1"
+                               Style="{StaticResource SkinFrameStyle}">
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="SkinSelected_Tapped" CommandParameter="1"/>
                             </Frame.GestureRecognizers>
-                            <Image Source="plant_skin2.png" 
-                                   HeightRequest="90" 
+                            <Image Source="plant_watered_1.png" 
+                                   HeightRequest="70" 
                                    Aspect="AspectFit"/>
                         </Frame>
 
-                        <Frame Grid.Row="0" Grid.Column="2" 
-                               BorderColor="#E0F2F1" 
-                               CornerRadius="10" 
-                               Padding="5" 
-                               Margin="5">
+                        <!-- Скін 2 -->
+                        <Frame x:Name="skinFrame2"
+                               Style="{StaticResource SkinFrameStyle}">
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="SkinSelected_Tapped" CommandParameter="2"/>
                             </Frame.GestureRecognizers>
-                            <Image Source="plant_skin3.png" 
-                                   HeightRequest="90" 
+                            <Image Source="plant_watered_2.png" 
+                                   HeightRequest="70" 
                                    Aspect="AspectFit"/>
                         </Frame>
-
-                        <!-- Второй ряд скинов (2) -->
-                        <Frame Grid.Row="1" Grid.Column="0" 
-                               BorderColor="#E0F2F1" 
-                               CornerRadius="10" 
-                               Padding="5" 
-                               Margin="5">
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="SkinSelected_Tapped" CommandParameter="3"/>
-                            </Frame.GestureRecognizers>
-                            <Image Source="plant_skin4.png" 
-                                   HeightRequest="90" 
-                                   Aspect="AspectFit"/>
-                        </Frame>
-
-                        <Frame Grid.Row="1" Grid.Column="1" 
-                               BorderColor="#E0F2F1" 
-                               CornerRadius="10" 
-                               Padding="5" 
-                               Margin="5">
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="SkinSelected_Tapped" CommandParameter="4"/>
-                            </Frame.GestureRecognizers>
-                            <Image Source="plant_skin5.png" 
-                                   HeightRequest="90" 
-                                   Aspect="AspectFit"/>
-                        </Frame>
-                    </Grid>
+                    </StackLayout>
                 </StackLayout>
             </Frame>
 

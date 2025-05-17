@@ -14,22 +14,15 @@ namespace TestAppB.Views
         private Plant _plant;
         private readonly Action _saveCallback;
 
-        // Массивы имен изображений для каждого скина (сухое и политое состояние)
-        private readonly string[] _drySkinImages = {
-            "plant_default_dry.png",
-            "plant_skin1_dry.png",
-            "plant_skin2_dry.png",
-            "plant_skin3_dry.png",
-            "plant_skin4_dry.png"
+        // Масиви імен зображень для кожного скіна (сухий і политий стан)
+        private readonly string[] _plantSkins = {
+            "plant_watered.png",
+            "plant_watered_1.png",
+            "plant_watered_2.png"
         };
 
-        private readonly string[] _wateredSkinImages = {
-            "plant_default_watered.png",
-            "plant_skin1_watered.png",
-            "plant_skin2_watered.png",
-            "plant_skin3_watered.png",
-            "plant_skin4_watered.png"
-        };
+        // Масив фреймів скінів для стилізації вибраного скіна
+        private Frame[] _skinFrames;
 
         public PlantDisplayPage(Plant plant, List<Plant> allPlants, Action saveCallback)
         {
@@ -37,20 +30,23 @@ namespace TestAppB.Views
             _plant = plant;
             _saveCallback = saveCallback;
 
-            // Добавляем кнопку "Назад" в заголовок
+            // Додаємо кнопку "Назад" у заголовок
             ToolbarItems.Add(new ToolbarItem
             {
                 Text = "Назад",
                 Command = new Command(async () => await Navigation.PopModalAsync())
             });
 
-            // Инициализируем UI
+            // Ініціалізуємо масив фреймів для стилізації
+            _skinFrames = new Frame[] { skinFrame0, skinFrame1, skinFrame2 };
+
+            // Ініціалізуємо UI
             UpdateUI();
         }
 
         protected override bool OnBackButtonPressed()
         {
-            // Обрабатываем нажатие системной кнопки "Назад"
+            // Обробляємо натискання системної кнопки "Назад"
             Device.BeginInvokeOnMainThread(async () => {
                 await Navigation.PopModalAsync();
             });
@@ -66,20 +62,20 @@ namespace TestAppB.Views
 
         private void UpdateUI()
         {
-            // Обновляем заголовок
+            // Оновлюємо заголовок
             plantNameLabel.Text = _plant.Name;
 
-            // Обновляем статус полива
+            // Оновлюємо статус поливу
             string statusText = _plant.IsWatered ? "Полито" : "Не полито";
             plantStatusLabel.Text = $"Статус: {statusText}";
             statusDetailLabel.Text = statusText;
 
-            // Обновляем информацию о последнем поливе
+            // Оновлюємо інформацію про останній полив
             if (_plant.LastWatered > DateTime.MinValue)
             {
                 lastWateredLabel.Text = _plant.LastWatered.ToString("dd.MM.yyyy HH:mm");
 
-                // Рассчитываем примерное время следующего полива (через 2 дня после последнего)
+                // Розраховуємо приблизний час наступного поливу (через 2 дні після останнього)
                 DateTime nextWatering = _plant.LastWatered.AddDays(2);
                 if (DateTime.Now >= nextWatering)
                 {
@@ -99,59 +95,71 @@ namespace TestAppB.Views
                 nextWateringLabel.TextColor = Color.FromHex("#4CAF50");
             }
 
-            // Обновляем кнопку полива
+            // Оновлюємо кнопку поливу
             waterButton.IsEnabled = !_plant.IsWatered;
             waterButton.Text = _plant.IsWatered ? "Вже полито" : "Полити рослину";
             waterButton.BackgroundColor = _plant.IsWatered ? Color.FromHex("#BDBDBD") : Color.FromHex("#66BB6A");
 
-            // Обновляем изображение растения
+            // Оновлюємо зображення рослини
             UpdatePlantImage();
+
+            // Підсвічуємо вибраний скін
+            UpdateSelectedSkinFrame();
         }
 
         private void UpdatePlantImage()
         {
-            // Проверяем индекс скина в допустимых пределах
-            int skinIndex = Math.Min(Math.Max(_plant.SkinIndex, 0), _drySkinImages.Length - 1);
+            // Перевіряємо індекс скіна в допустимих межах
+            int skinIndex = Math.Min(Math.Max(_plant.SkinIndex, 0), _plantSkins.Length - 1);
 
-            // Выбираем изображение в зависимости от статуса полива
-            string imageName = _plant.IsWatered
-                ? _wateredSkinImages[skinIndex]
-                : _drySkinImages[skinIndex];
+            // Встановлюємо зображення відповідно до вибраного скіна
+            plantImage.Source = _plantSkins[skinIndex];
+        }
 
-            plantImage.Source = imageName;
+        private void UpdateSelectedSkinFrame()
+        {
+            // Скидаємо стиль всіх фреймів
+            foreach (var frame in _skinFrames)
+            {
+                frame.Style = (Style)Resources["SkinFrameStyle"];
+            }
+
+            // Застосовуємо стиль вибраного скіна
+            int skinIndex = Math.Min(Math.Max(_plant.SkinIndex, 0), _skinFrames.Length - 1);
+            _skinFrames[skinIndex].Style = (Style)Resources["SelectedSkinFrameStyle"];
         }
 
         private async void WaterPlant_Clicked(object sender, EventArgs e)
         {
             if (!_plant.IsWatered)
             {
-                // Меняем статус полива
+                // Змінюємо статус поливу
                 _plant.IsWatered = true;
                 _plant.LastWatered = DateTime.Now;
 
-                // Сохраняем изменения
+                // Зберігаємо зміни
                 _saveCallback?.Invoke();
 
-                // Анимация полива
+                // Анімація поливу
                 await AnimateWatering();
 
-                // Обновляем UI
+                // Оновлюємо UI
                 UpdateUI();
 
-                // Показываем уведомление
+                // Показуємо повідомлення
                 await DisplayAlert("Успіх", $"Рослина {_plant.Name} полита!", "OK");
             }
         }
 
         private async Task AnimateWatering()
         {
-            // Анимация исчезновения
+            // Анімація зникнення
             await plantImage.FadeTo(0.3, 300);
 
-            // Меняем изображение на политое
+            // Оновлюємо зображення (хоча для политої рослини зображення не змінюється)
             UpdatePlantImage();
 
-            // Анимация появления
+            // Анімація появи
             await plantImage.FadeTo(1, 300);
         }
 
@@ -162,21 +170,26 @@ namespace TestAppB.Views
 
             if (tapGesture != null && int.TryParse((string)tapGesture.CommandParameter, out int selectedSkinIndex))
             {
-                // Проверяем, что индекс в допустимом диапазоне
-                if (selectedSkinIndex >= 0 && selectedSkinIndex < _drySkinImages.Length)
+                // Перевіряємо, що індекс в допустимому діапазоні
+                if (selectedSkinIndex >= 0 && selectedSkinIndex < _plantSkins.Length)
                 {
-                    // Сохраняем текущий скин
+                    // Якщо це вже вибраний скін, не робимо нічого
+                    if (_plant.SkinIndex == selectedSkinIndex)
+                        return;
+
+                    // Зберігаємо поточний скін
                     _plant.SkinIndex = selectedSkinIndex;
 
-                    // Сохраняем изменения
+                    // Зберігаємо зміни
                     _saveCallback?.Invoke();
 
-                    // Анимируем изменение скина
+                    // Анімуємо зміну скіна
                     await plantImage.ScaleTo(0.8, 150);
                     UpdatePlantImage();
+                    UpdateSelectedSkinFrame();
                     await plantImage.ScaleTo(1, 150);
 
-                    // Выводим уведомление
+                    // Виводимо повідомлення
                     await DisplayAlert("Успіх", "Вигляд рослини змінено", "OK");
                 }
             }
@@ -184,7 +197,7 @@ namespace TestAppB.Views
 
         private async void ViewNotes_Clicked(object sender, EventArgs e)
         {
-            // Используем PushModalAsync для перехода на страницу с записями
+            // Використовуємо PushModalAsync для переходу на сторінку з записами
             await Navigation.PushModalAsync(new PlantNotesPage(_plant, _saveCallback));
         }
     }

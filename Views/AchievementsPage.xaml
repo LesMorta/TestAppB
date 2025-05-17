@@ -58,7 +58,7 @@
             <Grid ColumnDefinitions="*, Auto, *, Auto, *">
                 <!-- Всего достижений -->
                 <StackLayout HorizontalOptions="Center" Grid.Column="0">
-                    <Label Style="{StaticResource StatsTitleStyle}" Text="Всего"/>
+                    <Label Style="{StaticResource StatsTitleStyle}" Text="Всього"/>
                     <Label x:Name="totalAchievementsLabel" 
                            Style="{StaticResource StatsValueStyle}"/>
                 </StackLayout>
@@ -71,7 +71,7 @@
 
                 <!-- Получено -->
                 <StackLayout HorizontalOptions="Center" Grid.Column="2">
-                    <Label Style="{StaticResource StatsTitleStyle}" Text="Получено"/>
+                    <Label Style="{StaticResource StatsTitleStyle}" Text="Отримано"/>
                     <Label x:Name="unlockedAchievementsLabel" 
                            Style="{StaticResource StatsValueStyle}"
                            TextColor="#4CAF50"/>
@@ -85,7 +85,7 @@
 
                 <!-- Прогресс -->
                 <StackLayout HorizontalOptions="Center" Grid.Column="4">
-                    <Label Style="{StaticResource StatsTitleStyle}" Text="Прогресс"/>
+                    <Label Style="{StaticResource StatsTitleStyle}" Text="Прогрес"/>
                     <Label x:Name="progressLabel" 
                            Style="{StaticResource StatsValueStyle}"
                            TextColor="#42A5F5"/>
